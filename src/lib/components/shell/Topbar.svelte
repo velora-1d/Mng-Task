@@ -9,7 +9,29 @@
 		onmenu: () => void;
 	};
 
-	let { user, reminderCount = 0, onmenu }: Props = $props();
+	let { user, reminderCount = 0, switchableUsers = [], onmenu }: Props = $props();
+	let switchOpen = $state(false);
+	let switchingId = $state<string | null>(null);
+
+	async function doSwitch(targetUserId: string) {
+		switchingId = targetUserId;
+		try {
+			const res = await fetch('/api/impersonate', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ userId: targetUserId })
+			});
+			if (res.ok) {
+				window.location.href = '/dashboard';
+			} else {
+				const d = await res.json();
+				alert(d.message ?? 'Gagal beralih akun');
+			}
+		} finally {
+			switchingId = null;
+			switchOpen = false;
+		}
+	}
 
 	let theme = $state<'light' | 'dark'>('light');
 
@@ -59,6 +81,52 @@
 	</form>
 
 	<div class="ml-auto flex items-center gap-2">
+		{#if switchableUsers.length > 0}
+			<div class="relative">
+				<button
+					type="button"
+					class="flex h-9 items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 text-xs font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 transition active:scale-95"
+					onclick={() => (switchOpen = !switchOpen)}
+					aria-expanded={switchOpen}
+					title="Beralih ke akun user lain"
+				>
+					<Icon name="switchUser" size={14} />
+					<span class="hidden sm:inline">Switch User</span>
+				</button>
+
+				{#if switchOpen}
+					<div
+						class="fixed inset-0 z-30"
+						onclick={() => (switchOpen = false)}
+						aria-hidden="true"
+					></div>
+					<div class="absolute right-0 top-full mt-1.5 z-40 w-56 rounded-xl border border-border-base bg-surface p-1.5 shadow-lg backdrop-blur-md">
+						<div class="px-2 py-1.5 text-[11px] font-bold tracking-wider text-ink-muted uppercase">
+							Pilih Akun User:
+						</div>
+						<div class="max-h-60 overflow-y-auto flex flex-col gap-0.5">
+							{#each switchableUsers as u (u.id)}
+								<button
+									type="button"
+									class="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs transition hover:bg-surface-raised disabled:opacity-50"
+									disabled={switchingId === u.id}
+									onclick={() => doSwitch(u.id)}
+								>
+									<Avatar name={u.name} size="sm" />
+									<div class="min-w-0 flex-1">
+										<p class="font-semibold text-ink truncate">{u.name}</p>
+										<p class="text-[10px] text-ink-muted truncate">{u.email}</p>
+									</div>
+									{#if switchingId === u.id}
+										<span class="text-[10px] text-amber-600 font-bold">...</span>
+									{/if}
+								</button>
+							{/each}
+						</div>
+					</div>
+				{/if}
+			</div>
+		{/if}
 		<button
 			type="button"
 			class="grid size-9 place-items-center rounded-md border border-border-base bg-surface text-ink-secondary hover:bg-surface-raised hover:text-ink"

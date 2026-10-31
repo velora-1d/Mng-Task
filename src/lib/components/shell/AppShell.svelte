@@ -10,10 +10,11 @@
 		orgName?: string;
 		reminderCount?: number;
 		impersonating?: boolean;
+		switchableUsers?: { id: string; name: string; email: string; role: string }[];
 		children: Snippet;
 	};
 
-	let { user, orgName = 'Mng-Task', reminderCount = 0, impersonating = false, children }: Props = $props();
+	let { user, orgName = 'Mng-Task', reminderCount = 0, impersonating = false, switchableUsers = [], children }: Props = $props();
 	let menuOpen = $state(false);
 </script>
 
@@ -28,7 +29,7 @@
 	<Sidebar bind:open={menuOpen} {user} {orgName} {reminderCount} {impersonating} />
 
 	<div class="flex min-w-0 flex-col">
-		<Topbar {user} {reminderCount} onmenu={() => (menuOpen = true)} />
+		<Topbar {user} {reminderCount} {switchableUsers} onmenu={() => (menuOpen = true)} />
 
 		<main class="w-full flex-1 px-4 py-5 sm:px-6 lg:px-8">
 			{@render children()}

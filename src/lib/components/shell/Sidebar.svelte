@@ -12,7 +12,25 @@
 		open?: boolean;
 	};
 
-	let { user, orgName = 'Mng-Task', reminderCount = 0, open = $bindable(false) }: Props = $props();
+	let {
+	user,
+	orgName = 'Mng-Task',
+	reminderCount = 0,
+	open = $bindable(false),
+	impersonating = false
+}: Props = $props();
+
+let restoring = $state(false);
+
+async function returnToOwner() {
+	restoring = true;
+	try {
+		const res = await fetch('/api/impersonate/stop', { method: 'POST' });
+		if (res.ok) window.location.href = '/dashboard';
+	} finally {
+		restoring = false;
+	}
+}
 
 	type NavItem = { href: string; label: string; icon: IconName; badge?: number; ownerOnly?: boolean };
 

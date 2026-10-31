@@ -32,6 +32,7 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 	let singleDeleteDialogOpen = $state(false);
 	let bulkDeleteDialogOpen = $state(false);
 	let singleDeleting = $state(false);
+	let viewMode = $state<'list' | 'kanban'>('list');
 
 	$effect(() => {
 		// Reset pilihan saat halaman atau filter berubah

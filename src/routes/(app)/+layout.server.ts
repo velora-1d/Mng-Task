@@ -1,5 +1,8 @@
 import { requireUser } from '#lib/server/auth/guards';
 import { countActiveReminders } from '#lib/server/queries/reminders';
+import { db } from '#lib/server/db/client';
+import { users } from '#lib/server/db/schema';
+import { and, eq, ne } from 'drizzle-orm';
 
 export const load = async ({ locals, url, cookies }) => {
 	const user = requireUser(locals, url);
@@ -17,9 +20,23 @@ export const load = async ({ locals, url, cookies }) => {
 	const seenAt = cookies.get('mngtask_reminders_seen');
 	const reminderCount = await countActiveReminders(user, seenAt);
 
+	let switchableUsers: { id: string; name: string; email: string; role: string }[] = [];
+	if (user.role === 'OWNER') {
+		switchableUsers = await db
+			.select({
+				id: users.id,
+				name: users.name,
+				email: users.email,
+				role: users.role
+			})
+			.from(users)
+			.where(and(eq(users.isActive, true), ne(users.id, user.id)));
+	}
+
 	return {
 		user,
 		reminderCount,
-		impersonating: locals.impersonating
+		impersonating: locals.impersonating,
+		switchableUsers
 	};
 };

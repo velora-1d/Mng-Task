@@ -5,6 +5,6 @@
 	let { data, children }: LayoutProps = $props();
 </script>
 
-<AppShell user={data.user} reminderCount={data.reminderCount} impersonating={data.impersonating}>
+<AppShell user={data.user} reminderCount={data.reminderCount} impersonating={data.impersonating} switchableUsers={data.switchableUsers}>
 	{@render children()}
 </AppShell>
