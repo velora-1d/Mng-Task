@@ -8,6 +8,7 @@
 	import Pagination from '#lib/components/ui/Pagination.svelte';
 	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
 	import QuickStatus from '#lib/components/tasks/QuickStatus.svelte';
+import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 	import {
 		PRIORITY_LABEL,
 		TASK_PRIORITIES,
@@ -102,7 +103,28 @@
 			<Icon name="download" size={16} />
 			Export CSV
 		</a>
-		<a href="/tasks/new" class="btn btn-primary">
+		<div class="flex items-center rounded-lg border border-border-base bg-surface p-0.5" role="group" aria-label="Mode tampilan">
+			<button
+				type="button"
+				class={['flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition', viewMode === 'list' ? 'bg-primary text-white shadow-xs' : 'text-ink-secondary hover:text-ink'].join(' ')}
+				onclick={() => (viewMode = 'list')}
+				aria-pressed={viewMode === 'list'}
+			>
+				<Icon name="list" size={14} />
+				<span>List</span>
+			</button>
+			<button
+				type="button"
+				class={['flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition', viewMode === 'kanban' ? 'bg-primary text-white shadow-xs' : 'text-ink-secondary hover:text-ink'].join(' ')}
+				onclick={() => (viewMode = 'kanban')}
+				aria-pressed={viewMode === 'kanban'}
+			>
+				<Icon name="kanban" size={14} />
+				<span>Board</span>
+			</button>
+		</div>
+
+		<a href="/tasks/new" class="btn btn-primary min-h-[38px] px-3.5">
 			<Icon name="plus" size={16} />
 			Buat task
 		</a>
@@ -221,6 +243,15 @@
 			{/snippet}
 		</EmptyState>
 	</div>
+{:else if viewMode === 'kanban'}
+	<KanbanBoard
+		tasks={data.items}
+		{currentPath}
+		ondelete={(t) => {
+			taskToDelete = t;
+			singleDeleteDialogOpen = true;
+		}}
+	/>
 {:else}
 	<div class="surface-card overflow-hidden">
 		<!-- Desktop -->

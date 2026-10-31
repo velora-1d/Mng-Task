@@ -125,7 +125,19 @@
 		{/each}
 	</nav>
 
-	<div class="mt-auto">
+	<div class="mt-auto flex flex-col gap-2">
+		{#if impersonating}
+			<button
+				type="button"
+				class="flex h-10 items-center justify-center gap-2 rounded-lg bg-amber-500/15 border border-amber-500/30 px-3 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/25 transition active:scale-95 disabled:opacity-50"
+				onclick={returnToOwner}
+				disabled={restoring}
+			>
+				<Icon name="switchUser" size={15} />
+				<span>{restoring ? 'Kembali…' : 'Kembali ke Owner'}</span>
+			</button>
+		{/if}
+
 		<a
 			href="/settings"
 			class="flex items-center gap-2.5 rounded-[10px] border border-border-base bg-canvas p-2.5 hover:bg-surface-raised"

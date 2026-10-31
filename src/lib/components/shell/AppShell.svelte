@@ -25,7 +25,7 @@
 	class="min-h-screen lg:grid lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"
 	style={impersonating ? 'padding-top: 40px' : ''}
 >
-	<Sidebar bind:open={menuOpen} {user} {orgName} {reminderCount} />
+	<Sidebar bind:open={menuOpen} {user} {orgName} {reminderCount} {impersonating} />
 
 	<div class="flex min-w-0 flex-col">
 		<Topbar {user} {reminderCount} onmenu={() => (menuOpen = true)} />

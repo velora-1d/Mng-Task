@@ -13,7 +13,7 @@
 		try {
 			const res = await fetch('/api/impersonate/stop', { method: 'POST' });
 			if (res.ok) {
-				window.location.href = '/users';
+				window.location.href = '/dashboard';
 			} else {
 				const data = await res.json();
 				alert(data.message ?? 'Gagal kembali ke akun owner.');
