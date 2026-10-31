@@ -2,6 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { requireOwner } from '#lib/server/auth/guards';
 import {
 	createUser,
+	deleteUser,
 	getUserById,
 	listUsers,
 	resetUserPassword,
@@ -219,5 +220,33 @@ export const actions = {
 		});
 
 		redirect(303, '/users?reset=1');
+	},
+
+	delete: async ({ request, locals, url, getClientAddress }) => {
+		const owner = requireOwner(locals, url);
+		const data = await request.formData();
+		const id = String(data.get('id') ?? '');
+
+		const target = await getUserById(id);
+		if (!target) {
+			return fail(404, { error: 'User tidak ditemukan' });
+		}
+
+		const res = await deleteUser(id, owner.id);
+		if (!res.ok) {
+			return fail(400, { error: res.message });
+		}
+
+		await recordAudit({
+			actorId: owner.id,
+			action: 'user.delete',
+			entityType: 'user',
+			entityId: id,
+			before: { name: target.name, email: target.email, role: target.role },
+			ip: getClientAddress(),
+			userAgent: request.headers.get('user-agent')
+		});
+
+		redirect(303, '/users?deleted=1');
 	}
 };

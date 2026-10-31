@@ -25,6 +25,9 @@
 	let selectedUser = $state<any>(null);
 	let userToDeactivate = $state<any>(null);
 	let deactivateDialogOpen = $state(false);
+	let userToDelete = $state<any>(null);
+	let deleteDialogOpen = $state(false);
+	let deleting = $state(false);
 	let bulkDeactivateOpen = $state(false);
 	let deactivating = $state(false);
 
@@ -326,6 +329,20 @@
 											</button>
 										</form>
 									{/if}
+
+									{#if u.id !== data.user?.id}
+										<button
+											type="button"
+											class="grid size-8 place-items-center rounded text-ink-muted hover:bg-danger/10 hover:text-danger"
+											title="Hapus pengguna"
+											onclick={() => {
+												userToDelete = u;
+												deleteDialogOpen = true;
+											}}
+										>
+											<Icon name="trash" size={15} />
+										</button>
+									{/if}
 								</div>
 							</td>
 						</tr>
@@ -477,6 +494,38 @@
 	}}
 />
 
+<!-- Form & Modal Konfirmasi Hapus Pengguna -->
+<form
+	id="singleDeleteForm"
+	method="POST"
+	action="?/delete"
+	class="hidden"
+	use:enhance={() => {
+		deleting = true;
+		return async ({ result }) => {
+			deleting = false;
+			deleteDialogOpen = false;
+			await applyAction(result);
+		};
+	}}
+>
+	<input type="hidden" name="id" value={userToDelete?.id} />
+</form>
+
+<ConfirmDialog
+	bind:open={deleteDialogOpen}
+	title="Hapus pengguna secara permanen?"
+	message={`Akun "${userToDelete?.name ?? ''}" (${userToDelete?.email ?? ''}) akan dihapus secara permanen. Semua sesi dan pengingat akan dibersihkan, dan tugas yang dibuatnya akan dialihkan ke Anda.`}
+	confirmLabel="Ya, hapus permanen"
+	cancelLabel="Batal"
+	variant="danger"
+	loading={deleting}
+	onconfirm={() => {
+		const formEl = document.getElementById('singleDeleteForm') as HTMLFormElement;
+		formEl?.requestSubmit();
+	}}
+/>
+
 <!-- Modal Detail Pengguna (Custom Estetik) -->
 <Dialog
 	bind:open={detailOpen}
@@ -553,6 +602,20 @@
 					<Icon name="edit" size={14} />
 					Ubah data
 				</Button>
+				{#if selectedUser?.id !== data.user?.id}
+					<Button
+						variant="danger"
+						size="sm"
+						onclick={() => {
+							userToDelete = selectedUser;
+							detailOpen = false;
+							deleteDialogOpen = true;
+						}}
+					>
+						<Icon name="trash" size={14} />
+						Hapus
+					</Button>
+				{/if}
 			</div>
 		</div>
 	{/if}

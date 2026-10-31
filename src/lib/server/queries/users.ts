@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, like, or, sql, type SQL } from 'drizzle-orm';
 import { db } from '../db/client';
-import { users } from '../db/schema';
+import { tasks, users } from '../db/schema';
 import type { UserRole } from '#lib/types';
 import { hashPassword } from '../auth/password';
 import { invalidateUserSessions } from '../auth/session';
@@ -190,6 +190,34 @@ export async function resetUserPassword(id: string, newPasswordPlain: string) {
 		.where(eq(users.id, id));
 
 	await invalidateUserSessions(id);
+
+	return { ok: true as const };
+}
+
+export async function deleteUser(id: string, reassignToOwnerId: string) {
+	const target = await getUserById(id);
+	if (!target) return { ok: false as const, message: 'User tidak ditemukan.' };
+	if (target.id === reassignToOwnerId) {
+		return { ok: false as const, message: 'Tidak dapat menghapus akun Anda sendiri.' };
+	}
+	if (target.role === 'OWNER') {
+		const ownersCount = await countActiveOwners();
+		if (ownersCount <= 1) {
+			return { ok: false as const, message: 'Tidak dapat menghapus satu-satunya Owner aktif.' };
+		}
+	}
+
+	// 1. Invalidate sessions
+	await invalidateUserSessions(id);
+
+	// 2. Reassign task createdBy to current Owner to preserve foreign key integrity
+	await db.update(tasks).set({ createdBy: reassignToOwnerId }).where(eq(tasks.createdBy, id));
+
+	// 3. Set assigneeId to null for tasks assigned to this user
+	await db.update(tasks).set({ assigneeId: null }).where(eq(tasks.assigneeId, id));
+
+	// 4. Delete the user
+	await db.delete(users).where(eq(users.id, id));
 
 	return { ok: true as const };
 }

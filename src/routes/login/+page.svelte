@@ -82,7 +82,7 @@
 
 			<h2 class="font-[family-name:var(--font-display)] text-[28px] font-bold text-ink">Masuk</h2>
 			<p class="mt-1 mb-6 text-sm text-ink-secondary">
-				Gunakan akun yang diberikan Owner. Tidak ada pendaftaran publik.
+				Masuk menggunakan akun Anda untuk mengelola tugas.
 			</p>
 
 			{#if error}
@@ -139,6 +139,13 @@
 				<Button type="submit" loading={submitting} class="mt-1 w-full">
 					{submitting ? 'Memeriksa…' : 'Masuk'}
 				</Button>
+
+				<div class="mt-4 text-center text-sm text-ink-secondary">
+					Belum punya akun?{' '}
+					<a href="/register" class="font-medium text-primary hover:underline">
+						Daftar akun baru
+					</a>
+				</div>
 			</form>
 		</div>
 	</div>
