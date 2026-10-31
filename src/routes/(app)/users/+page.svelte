@@ -38,6 +38,7 @@
 
 	let selectedIds = $state<string[]>([]);
 	let bulkBusy = $state(false);
+	let switchBusy = $state(false);
 
 	$effect(() => {
 		data.items;
@@ -81,6 +82,26 @@
 		const params = new URLSearchParams(page.url.searchParams.toString());
 		params.set('page', String(target));
 		return `?${params.toString()}`;
+	}
+
+
+	async function switchToUser(userId: string) {
+		switchBusy = true;
+		try {
+			const res = await fetch("/api/impersonate", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ userId })
+			});
+			if (res.ok) {
+				window.location.href = "/dashboard";
+			} else {
+				const data = await res.json();
+				alert(data.message ?? "Gagal beralih pengguna.");
+			}
+		} finally {
+			switchBusy = false;
+		}
 	}
 
 	const roleOptions = [
@@ -267,6 +288,18 @@
 									>
 										<Icon name="shield" size={15} />
 									</button>
+
+									{#if u.isActive && u.id !== data.user?.id}
+										<button
+											type="button"
+											class="grid size-8 place-items-center rounded text-ink-muted hover:bg-amber-100 hover:text-amber-700"
+											title="Masuk sebagai {u.name}"
+											disabled={switchBusy}
+											onclick={() => switchToUser(u.id)}
+										>
+											<Icon name="switchUser" size={15} />
+										</button>
+									{/if}
 
 									{#if u.isActive}
 										<button
@@ -495,6 +528,20 @@
 				<Button variant="secondary" size="sm" onclick={() => (detailOpen = false)}>
 					Tutup
 				</Button>
+				{#if selectedUser.isActive && selectedUser.id !== data.user?.id}
+					<Button
+						variant="secondary"
+						size="sm"
+						disabled={switchBusy}
+						onclick={() => {
+							detailOpen = false;
+							switchToUser(selectedUser.id);
+						}}
+					>
+						<Icon name="switchUser" size={14} />
+						Masuk sebagai user ini
+					</Button>
+				{/if}
 				<Button
 					variant="primary"
 					size="sm"

@@ -21,6 +21,7 @@ function maybePurge(): void {
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.user = null;
 	event.locals.sessionId = null;
+	event.locals.impersonating = !!event.cookies.get('mngtask_impersonate');
 
 	const token = event.cookies.get(SESSION_COOKIE);
 	if (token) {

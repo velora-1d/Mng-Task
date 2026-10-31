@@ -4,7 +4,7 @@
 	"version": "0.1.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "node --env-file=.env ./node_modules/.bin/vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"start": "node build",
@@ -12,9 +12,9 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"db:generate": "drizzle-kit generate",
-		"db:migrate": "node --import tsx src/lib/server/db/migrate.ts",
-		"db:seed": "node --import tsx src/lib/server/db/seed.ts",
-		"db:reset": "rm -f data/mngtask.db data/mngtask.db-wal data/mngtask.db-shm && npm run db:migrate && npm run db:seed"
+		"db:migrate": "node --env-file=.env --import tsx src/lib/server/db/migrate.ts",
+		"db:seed": "node --env-file=.env --import tsx src/lib/server/db/seed.ts",
+		"db:reset": "npm run db:migrate && npm run db:seed"
 	},
 	"imports": {
 		"#lib": "./src/lib/index.js",
@@ -34,7 +34,13 @@
 		"vite": "^8.3.5"
 	},
 	"dependencies": {
-		"@libsql/client": "^0.18.0",
+		"@aws-sdk/client-s3": "^3.1161.0",
+		"@neon/auth": "^0.8.2",
+		"@neon/config": "^1.10.0",
+		"@neon/env": "^1.6.8",
+		"@neon/realtime": "^0.1.2",
+		"@neon/realtime-drizzle": "^0.1.0",
+		"@neondatabase/serverless": "^1.2.0",
 		"@node-rs/argon2": "^2.2.2",
 		"drizzle-orm": "^0.45.4",
 		"zod": "^4.6.7"

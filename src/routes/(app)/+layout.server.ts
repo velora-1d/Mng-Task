@@ -16,5 +16,10 @@ export const load = async ({ locals, url, cookies }) => {
 
 	const seenAt = cookies.get('mngtask_reminders_seen');
 	const reminderCount = await countActiveReminders(user, seenAt);
-	return { user, reminderCount };
+
+	return {
+		user,
+		reminderCount,
+		impersonating: locals.impersonating
+	};
 };

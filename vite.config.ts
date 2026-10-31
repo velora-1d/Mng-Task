@@ -7,7 +7,6 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		sveltekit({
-			// SvelteKit 3: semua konfigurasi ada di sini, bukan svelte.config.js.
 			compilerOptions: {
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true

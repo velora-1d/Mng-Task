@@ -19,3 +19,10 @@ backup/
 # os / editor
 .DS_Store
 *.log
+.neon
+
+# temp
+hello.ts
+neon.ts
+.beads/
+kanban/

@@ -2,21 +2,29 @@
 	import type { Snippet } from 'svelte';
 	import Sidebar from './Sidebar.svelte';
 	import Topbar from './Topbar.svelte';
+	import ImpersonateBanner from './ImpersonateBanner.svelte';
 	import type { UserRole } from '#lib/types';
 
 	type Props = {
 		user: { name: string; role: UserRole };
 		orgName?: string;
 		reminderCount?: number;
+		impersonating?: boolean;
 		children: Snippet;
 	};
 
-	let { user, orgName = 'Mng-Task', reminderCount = 0, children }: Props = $props();
-
+	let { user, orgName = 'Mng-Task', reminderCount = 0, impersonating = false, children }: Props = $props();
 	let menuOpen = $state(false);
 </script>
 
-<div class="min-h-screen lg:grid lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]">
+{#if impersonating}
+	<ImpersonateBanner userName={user.name} />
+{/if}
+
+<div
+	class="min-h-screen lg:grid lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"
+	style={impersonating ? 'padding-top: 40px' : ''}
+>
 	<Sidebar bind:open={menuOpen} {user} {orgName} {reminderCount} />
 
 	<div class="flex min-w-0 flex-col">

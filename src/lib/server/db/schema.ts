@@ -1,6 +1,6 @@
 /**
- * Skema database Mng-Task (SQLite).
- * Sumber kebenaran: file ini. `PRD/10-technical-stack/schema.sql` adalah turunannya.
+ * Skema database Mng-Task (PostgreSQL / Neon).
+ * Sumber kebenaran: file ini.
  *
  * Konvensi:
  * - Waktu disimpan TEXT ISO-8601 UTC (contoh 2026-10-31T06:00:00.000Z).
@@ -8,9 +8,8 @@
  * - Email selalu disimpan lowercase; keunikan dijaga unique index.
  */
 import { sql } from 'drizzle-orm';
-import { check, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { boolean, check, index, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { ReminderStatus, ReportType, TaskPriority, TaskStatus, UserRole } from '#lib/types';
-
 export * from '#lib/types';
 
 const timestamps = {
@@ -18,7 +17,7 @@ const timestamps = {
 	updatedAt: text('updated_at').notNull()
 };
 
-export const users = sqliteTable(
+export const users = pgTable(
 	'users',
 	{
 		id: text('id').primaryKey(),
@@ -26,23 +25,20 @@ export const users = sqliteTable(
 		email: text('email').notNull(),
 		passwordHash: text('password_hash').notNull(),
 		role: text('role').$type<UserRole>().notNull().default('USER'),
-		isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
-		mustChangePassword: integer('must_change_password', { mode: 'boolean' })
-			.notNull()
-			.default(false),
+		isActive: boolean('is_active').notNull().default(true),
+		mustChangePassword: boolean('must_change_password').notNull().default(false),
 		lastSeenAt: text('last_seen_at'),
 		...timestamps
 	},
 	(t) => [
 		uniqueIndex('idx_users_email').on(t.email),
 		index('idx_users_role_active').on(t.role, t.isActive),
-		check('users_role_check', sql`${t.role} in ('OWNER', 'USER')`),
-		check('users_is_active_check', sql`${t.isActive} in (0, 1)`)
+		check('users_role_check', sql`${t.role} in ('OWNER', 'USER')`)
 	]
 );
 
 /** Token asli hanya ada di cookie; yang disimpan hash SHA-256. */
-export const sessions = sqliteTable(
+export const sessions = pgTable(
 	'sessions',
 	{
 		id: text('id').primaryKey(),
@@ -62,7 +58,7 @@ export const sessions = sqliteTable(
 	]
 );
 
-export const tasks = sqliteTable(
+export const tasks = pgTable(
 	'tasks',
 	{
 		id: text('id').primaryKey(),
@@ -98,7 +94,7 @@ export const tasks = sqliteTable(
 );
 
 /** Reminder manual. Reminder otomatis dihitung dari tasks, tidak disimpan di sini. */
-export const reminders = sqliteTable(
+export const reminders = pgTable(
 	'reminders',
 	{
 		id: text('id').primaryKey(),
@@ -122,7 +118,7 @@ export const reminders = sqliteTable(
 );
 
 /** Snapshot laporan; tidak boleh berubah saat task diubah. */
-export const reports = sqliteTable(
+export const reports = pgTable(
 	'reports',
 	{
 		id: text('id').primaryKey(),
@@ -144,7 +140,7 @@ export const reports = sqliteTable(
 	]
 );
 
-export const auditLogs = sqliteTable(
+export const auditLogs = pgTable(
 	'audit_logs',
 	{
 		id: text('id').primaryKey(),
@@ -165,13 +161,13 @@ export const auditLogs = sqliteTable(
 	]
 );
 
-export const loginAttempts = sqliteTable(
+export const loginAttempts = pgTable(
 	'login_attempts',
 	{
 		id: text('id').primaryKey(),
 		email: text('email').notNull(),
 		ip: text('ip'),
-		success: integer('success', { mode: 'boolean' }).notNull().default(false),
+		success: boolean('success').notNull().default(false),
 		createdAt: text('created_at').notNull()
 	},
 	(t) => [
@@ -180,7 +176,7 @@ export const loginAttempts = sqliteTable(
 	]
 );
 
-export const settings = sqliteTable('settings', {
+export const settings = pgTable('settings', {
 	key: text('key').primaryKey(),
 	valueJson: text('value_json').notNull(),
 	updatedAt: text('updated_at').notNull()

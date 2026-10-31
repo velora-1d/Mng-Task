@@ -14,6 +14,8 @@ declare global {
 				mustChangePassword: boolean;
 			} | null;
 			sessionId: string | null;
+			/** True when an OWNER is impersonating this user */
+			impersonating: boolean;
 		}
 		// interface PageData {}
 		// interface PageState {}

@@ -1,21 +1,13 @@
-import { mkdirSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { createClient } from '@libsql/client';
-import { drizzle } from 'drizzle-orm/libsql';
+import { Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as schema from './schema';
 
-const file = resolve(process.env.DB_FILE ?? 'data/mngtask.db');
-mkdirSync(dirname(file), { recursive: true });
+const connectionString =
+	process.env.DATABASE_URL ||
+	'postgresql://neondb_owner:dummy@ep-dummy-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require';
 
-export const sqlite = createClient({ url: `file:${file}` });
-
-// Pragma harus diset per koneksi. WAL membuat baca/tulis tidak saling blokir.
-await sqlite.execute('PRAGMA journal_mode = WAL');
-await sqlite.execute('PRAGMA foreign_keys = ON');
-await sqlite.execute('PRAGMA busy_timeout = 5000');
-
-export const db = drizzle(sqlite, { schema });
-
+export const pool = new Pool({ connectionString });
+export const db = drizzle(pool, { schema });
 export type Db = typeof db;
 export type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
 export { schema };
