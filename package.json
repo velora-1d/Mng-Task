@@ -1,0 +1,42 @@
+{
+	"name": "mng-task",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"start": "node build",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "node --import tsx src/lib/server/db/migrate.ts",
+		"db:seed": "node --import tsx src/lib/server/db/seed.ts",
+		"db:reset": "rm -f data/mngtask.db data/mngtask.db-wal data/mngtask.db-shm && npm run db:migrate && npm run db:seed"
+	},
+	"imports": {
+		"#lib": "./src/lib/index.js",
+		"#lib/*": "./src/lib/*"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-node": "^6.0.1",
+		"@sveltejs/kit": "^3.1.1",
+		"@sveltejs/vite-plugin-svelte": "^7.3.1",
+		"@tailwindcss/vite": "^4.3.3",
+		"drizzle-kit": "^0.31.11",
+		"svelte": "^5.57.3",
+		"svelte-check": "^4.7.7",
+		"tailwindcss": "^4.3.3",
+		"tsx": "^4.23.15",
+		"typescript": "^6.0.3",
+		"vite": "^8.3.5"
+	},
+	"dependencies": {
+		"@libsql/client": "^0.18.0",
+		"@node-rs/argon2": "^2.2.2",
+		"drizzle-orm": "^0.45.4",
+		"zod": "^4.6.7"
+	}
+}

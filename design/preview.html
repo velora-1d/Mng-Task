@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mng-Task — Design Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./tokens.css" />
+  <style>
+    .app {
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+    .brand-mark {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: var(--primary); color: #fff;
+      display: grid; place-items: center;
+      font-family: var(--font-display); font-size: 19px; font-weight: 700;
+    }
+    .brand-name { font-family: var(--font-display); font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+    .brand-sub { font-size: 11px; color: var(--text-muted); margin-top: -2px; }
+
+    .nav { display: flex; flex-direction: column; gap: 2px; }
+    .nav-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .09em;
+      text-transform: uppercase; color: var(--text-muted);
+      padding: 0 10px; margin-bottom: 6px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      height: 38px; padding: 0 10px; border-radius: 8px;
+      color: var(--text-secondary); font-size: 14px; font-weight: 500;
+      position: relative;
+    }
+    .nav-item:hover { background: var(--surface-raised); color: var(--text); }
+    .nav-item.active {
+      background: var(--primary-soft); color: var(--primary);
+      font-weight: 600;
+    }
+    .nav-item.active::before {
+      content: ""; position: absolute; left: 0; top: 8px; bottom: 8px;
+      width: 3px; border-radius: 999px; background: var(--primary);
+    }
+    .nav-item svg { width: 18px; height: 18px; flex: 0 0 18px; }
+    .nav-badge {
+      margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px;
+      border-radius: 999px; background: var(--accent); color: #451a03;
+      font-size: 11px; font-weight: 700; display: grid; place-items: center;
+    }
+
+    .sidebar-foot { margin-top: auto; }
+    .user-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px; border: 1px solid var(--border); border-radius: 10px;
+      background: var(--canvas);
+    }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 999px;
+      display: grid; place-items: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+      background: var(--primary); flex: 0 0 32px;
+    }
+    .avatar.stone { background: #78716c; }
+    .avatar.amber { background: #b45309; }
+    .avatar.green { background: #15803d; }
+    .avatar.sm { width: 26px; height: 26px; flex-basis: 26px; font-size: 10px; }
+    .user-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
+    .user-role { font-size: 11px; color: var(--text-muted); }
+
+    /* ---------- Main ---------- */
+    .main { min-width: 0; display: flex; flex-direction: column; }
+
+    .topbar {
+      height: 64px; display: flex; align-items: center; gap: 16px;
+      padding: 0 28px; border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--canvas) 88%, transparent);
+      backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 10;
+    }
+    .search {
+      display: flex; align-items: center; gap: 8px;
+      width: min(360px, 100%); height: 36px; padding: 0 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text-muted);
+    }
+    .search input {
+      border: 0; background: transparent; outline: none; flex: 1;
+      font: inherit; font-size: 13px; color: var(--text);
+    }
+    .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .icon-btn {
+      width: 36px; height: 36px; display: grid; place-items: center;
+      border: 1px solid var(--border); border-radius: 8px;
+      background: var(--surface); color: var(--text-secondary); cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--surface-raised); color: var(--text); }
+    .icon-btn svg { width: 17px; height: 17px; }
+
+    .content { padding: 28px; max-width: var(--container); width: 100%; margin: 0 auto; }
+
+    .page-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .page-head h1 { margin: 4px 0 6px; }
+    .page-head .sub { color: var(--text-secondary); font-size: 14px; }
+
+    /* ---------- KPI ---------- */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-bottom: 16px;
+    }
+    .kpi {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      transition: box-shadow 150ms ease, transform 150ms ease;
+    }
+    .kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .kpi .label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .kpi .value {
+      font-family: var(--font-display); font-size: 34px; font-weight: 700;
+      letter-spacing: -0.02em; line-height: 1.15; margin-top: 6px;
+    }
+    .kpi .meta { font-size: 12px; margin-top: 6px; color: var(--text-secondary); }
+    .kpi .meta strong { color: var(--success); font-weight: 700; }
+    .kpi .meta .warn { color: var(--warning); }
+    .kpi .meta .bad { color: var(--error); }
+    .kpi.accent { border-left: 3px solid var(--primary); }
+
+    /* ---------- Layout ---------- */
+    .grid {
+      display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(280px, 1fr);
+      gap: 16px; align-items: start;
+    }
+    .stack { display: flex; flex-direction: column; gap: 16px; }
+
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 16px 16px 12px;
+    }
+    .card-head h3 { font-size: 16px; }
+    .card-head .hint { font-size: 12px; color: var(--text-muted); }
+    .card-body { padding: 0 16px 16px; }
+    .card { padding: 0; }
+
+    /* ---------- Chart ---------- */
+    .chart { display: flex; align-items: flex-end; gap: 10px; height: 96px; padding: 4px 2px 0; }
+    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+    .bar {
+      width: 100%; max-width: 34px; border-radius: 6px 6px 3px 3px;
+      background: var(--surface-raised); position: relative;
+      transition: background 150ms ease;
+    }
+    .bar.on { background: var(--primary); opacity: .9; }
+    .bar.on:hover { background: var(--primary-hover); }
+    .bar-wrap .day { font-size: 11px; color: var(--text-muted); }
+
+    /* ---------- Table ---------- */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 620px; }
+    thead th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted);
+      padding: 10px 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    tbody td {
+      padding: 13px 16px; border-bottom: 1px solid var(--border);
+      font-size: 14px; vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: var(--surface-hover); }
+    .task-title { font-weight: 600; color: var(--text); }
+    .task-desc { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .deadline { font-size: 13px; font-weight: 600; }
+    .deadline.over { color: var(--error); }
+    .deadline.soon { color: var(--warning); }
+    .assignee { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text-secondary); }
+
+    /* ---------- Right column ---------- */
+    .rail-item {
+      display: flex; gap: 12px; padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .rail-item:last-child { border-bottom: 0; }
+    .date-badge {
+      flex: 0 0 40px; height: 40px; border-radius: 9px;
+      background: var(--surface-raised); display: grid; place-items: center;
+      font-size: 11px; font-weight: 700; color: var(--text-secondary);
+      text-transform: uppercase; line-height: 1.1; text-align: center;
+    }
+    .date-badge.today { background: var(--primary-soft); color: var(--primary); }
+    .date-badge.late { background: var(--error-soft); color: var(--error); }
+    .rail-title { font-size: 13px; font-weight: 600; }
+    .rail-sub { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+    .activity { display: flex; gap: 10px; padding: 10px 16px; }
+    .dot { width: 7px; height: 7px; border-radius: 999px; background: var(--primary); margin-top: 7px; flex: 0 0 7px; }
+    .dot.green { background: var(--success); }
+    .dot.amber { background: var(--accent); }
+    .dot.red { background: var(--error); }
+    .activity p { font-size: 13px; line-height: 1.45; }
+    .activity time { font-size: 11px; color: var(--text-muted); }
+
+    .see-all {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 600; color: var(--primary);
+      padding: 0 16px 14px;
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1080px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed; z-index: 40; left: 0; top: 0; bottom: 0;
+        width: var(--sidebar-w); transform: translateX(-100%);
+        transition: transform 200ms ease; box-shadow: var(--shadow-lg);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-brand { display: flex !important; }
+      .menu-btn { display: grid; }
+      .content { padding: 20px 16px; }
+      .topbar { padding: 0 16px; }
+    }
+    @media (max-width: 560px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .search { display: none; }
+      h1 { font-size: 30px; }
+      .topbar-actions .desktop-only { display: none; }
+    }
+    .mobile-brand { display: none; align-items: center; gap: 8px; }
+    .menu-btn { display: none; }
+
+    .overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 30;
+      background: rgba(28, 25, 23, 0.45);
+      backdrop-filter: blur(2px);
+    }
+    .overlay.show { display: block; }
+
+    /* ---------- Reduced motion ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="overlay" id="overlay"></div>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div>
+          <div class="brand-name">Mng-Task</div>
+          <div class="brand-sub">Rina Studio</div>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navigasi utama">
+        <div class="nav-label">Menu</div>
+
+        <a class="nav-item active" href="#" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Dashboard
+        </a>
+
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg>
+          Tugas
+        </a>
+
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>
+          Laporan
+        </a>
+
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          Pengingat
+          <span class="nav-badge">3</span>
+        </a>
+
+        <div class="nav-label" style="margin-top:16px">Kelola</div>
+
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>
+          Pengguna
+        </a>
+
+        <a class="nav-item" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          Pengaturan
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="user-card">
+          <div class="avatar">RS</div>
+          <div style="min-width:0">
+            <div class="user-name">Rina Sari</div>
+            <div class="user-role">Owner</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="Buka menu" aria-controls="sidebar" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+
+        <div class="mobile-brand">
+          <div class="brand-mark" style="width:30px;height:30px;font-size:16px">M</div>
+          <strong style="font-family:var(--font-display)">Mng-Task</strong>
+        </div>
+
+        <label class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input type="search" placeholder="Cari tugas, laporan…" aria-label="Cari" />
+        </label>
+
+        <div class="topbar-actions">
+          <button class="icon-btn" id="themeBtn" aria-label="Ganti tema" title="Ganti tema">
+            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          </button>
+          <button class="icon-btn desktop-only" aria-label="Notifikasi" title="Notifikasi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          </button>
+          <div class="avatar" title="Rina Sari">RS</div>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="page-head">
+          <div>
+            <div class="overline">Jumat, 31 Oktober 2026</div>
+            <h1>Dashboard</h1>
+            <p class="sub">Selamat pagi, Rina. Ada 3 tugas yang perlu perhatian hari ini.</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+              Export
+            </button>
+            <button class="btn btn-primary">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+              Buat Task
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI -->
+        <section class="kpi-grid" aria-label="Ringkasan">
+          <div class="kpi accent">
+            <div class="label">Task aktif</div>
+            <div class="value">24</div>
+            <div class="meta"><strong>+6</strong> dari minggu lalu</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Selesai minggu ini</div>
+            <div class="value">18</div>
+            <div class="meta"><strong>75%</strong> completion rate</div>
+          </div>
+          <div class="kpi">
+            <div class="label">Deadline hari ini</div>
+            <div class="value">5</div>
+            <div class="meta"><span class="warn">2 prioritas tinggi</span></div>
+          </div>
+          <div class="kpi">
+            <div class="label">Overdue</div>
+            <div class="value">3</div>
+            <div class="meta"><span class="bad">Perlu tindakan hari ini</span></div>
+          </div>
+        </section>
+
+        <div class="grid">
+          <!-- Left -->
+          <div class="stack">
+            <section class="card">
+              <div class="card-head">
+                <div>
+                  <h3>Progres 7 hari</h3>
+                  <div class="hint">Task selesai per hari</div>
+                </div>
+                <span class="chip chip-done">+12%</span>
+              </div>
+              <div class="card-body">
+                <div class="chart" role="img" aria-label="Grafik task selesai 7 hari terakhir">
+                  <div class="bar-wrap"><div class="bar" style="height:38%"></div><span class="day">Sen</span></div>
+                  <div class="bar-wrap"><div class="bar" style="height:56%"></div><span class="day">Sel</span></div>
+                  <div class="bar-wrap"><div class="bar" style="height:44%"></div><span class="day">Rab</span></div>
+                  <div class="bar-wrap"><div class="bar" style="height:72%"></div><span class="day">Kam</span></div>
+                  <div class="bar-wrap"><div class="bar on" style="height:92%"></div><span class="day">Jum</span></div>
+                  <div class="bar-wrap"><div class="bar" style="height:30%"></div><span class="day">Sab</span></div>
+                  <div class="bar-wrap"><div class="bar" style="height:20%"></div><span class="day">Min</span></div>
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card-head">
+                <div>
+                  <h3>Tugas terbaru</h3>
+                  <div class="hint">24 task aktif · 5 deadline hari ini</div>
+                </div>
+                <button class="btn btn-ghost btn-sm">Lihat semua</button>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Tugas</th>
+                      <th>Status</th>
+                      <th>Prioritas</th>
+                      <th>Deadline</th>
+                      <th>Assignee</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="task-title">Finalisasi proposal klien</div>
+                        <div class="task-desc">Revisi scope & anggaran</div>
+                      </td>
+                      <td><span class="chip chip-progress">Dikerjakan</span></td>
+                      <td><span class="chip prio-high">Tinggi</span></td>
+                      <td><span class="deadline over">29 Okt</span></td>
+                      <td><div class="assignee"><div class="avatar sm amber">BS</div> Budi</div></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="task-title">Desain halaman laporan</div>
+                        <div class="task-desc">Mockup desktop & mobile</div>
+                      </td>
+                      <td><span class="chip chip-todo">Belum</span></td>
+                      <td><span class="chip prio-medium">Sedang</span></td>
+                      <td><span class="deadline soon">Hari ini</span></td>
+                      <td><div class="assignee"><div class="avatar sm">RS</div> Rina</div></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="task-title">Migrasi data task lama</div>
+                        <div class="task-desc">Validasi 1.240 baris</div>
+                      </td>
+                      <td><span class="chip chip-blocked">Terhambat</span></td>
+                      <td><span class="chip prio-urgent">Urgent</span></td>
+                      <td><span class="deadline soon">1 Nov</span></td>
+                      <td><div class="assignee"><div class="avatar sm green">SA</div> Sari</div></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="task-title">Review copy landing page</div>
+                        <div class="task-desc">Tone & CTA</div>
+                      </td>
+                      <td><span class="chip chip-done">Selesai</span></td>
+                      <td><span class="chip prio-low">Rendah</span></td>
+                      <td><span class="deadline">—</span></td>
+                      <td><div class="assignee"><div class="avatar sm amber">BS</div> Budi</div></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="task-title">Siapkan laporan bulanan</div>
+                        <div class="task-desc">Oktober 2026</div>
+                      </td>
+                      <td><span class="chip chip-progress">Dikerjakan</span></td>
+                      <td><span class="chip prio-medium">Sedang</span></td>
+                      <td><span class="deadline soon">3 Nov</span></td>
+                      <td><div class="assignee"><div class="avatar sm stone">DN</div> Dina</div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right -->
+          <div class="stack">
+            <section class="card">
+              <div class="card-head">
+                <h3>Deadline terdekat</h3>
+                <span class="hint">5 task</span>
+              </div>
+              <div>
+                <div class="rail-item">
+                  <div class="date-badge late">29<br>Okt</div>
+                  <div>
+                    <div class="rail-title">Finalisasi proposal klien</div>
+                    <div class="rail-sub">Budi · Terlambat 2 hari</div>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="date-badge today">31<br>Okt</div>
+                  <div>
+                    <div class="rail-title">Desain halaman laporan</div>
+                    <div class="rail-sub">Rina · Hari ini</div>
+                  </div>
+                </div>
+                <div class="rail-item">
+                  <div class="date-badge">01<br>Nov</div>
+                  <div>
+                    <div class="rail-title">Migrasi data task lama</div>
+                    <div class="rail-sub">Sari · Besok</div>
+                  </div>
+                </div>
+              </div>
+              <a class="see-all" href="#">Lihat semua pengingat →</a>
+            </section>
+
+            <section class="card">
+              <div class="card-head">
+                <h3>Aktivitas</h3>
+                <span class="hint">Terbaru</span>
+              </div>
+              <div>
+                <div class="activity">
+                  <div class="dot green"></div>
+                  <div>
+                    <p><strong>Budi</strong> menyelesaikan “Review copy landing page”</p>
+                    <time>10 menit lalu</time>
+                  </div>
+                </div>
+                <div class="activity">
+                  <div class="dot"></div>
+                  <div>
+                    <p><strong>Rina</strong> meng-assign task ke <strong>Sari</strong></p>
+                    <time>1 jam lalu</time>
+                  </div>
+                </div>
+                <div class="activity">
+                  <div class="dot amber"></div>
+                  <div>
+                    <p><strong>Dina</strong> menandai task sebagai terhambat</p>
+                    <time>3 jam lalu</time>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const btn = document.getElementById('themeBtn');
+    const icon = document.getElementById('themeIcon');
+    const sun = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+    const moon = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+
+    btn.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      icon.innerHTML = next === 'dark' ? moon : sun;
+    });
+
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const menuBtn = document.getElementById('menuBtn');
+
+    function setMenu(open) {
+      sidebar.classList.toggle('open', open);
+      overlay.classList.toggle('show', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    menuBtn.addEventListener('click', () => setMenu(!sidebar.classList.contains('open')));
+    overlay.addEventListener('click', () => setMenu(false));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setMenu(false);
+    });
+  </script>
+</body>
+</html>

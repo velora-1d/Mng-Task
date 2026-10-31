@@ -1,0 +1,348 @@
+/* ============================================================
+   Mng-Task — Design Tokens
+   Adapted from "Ember Studio" by chef (designmd.ai/chef/ember-studio, MIT)
+   Warm terracotta + stone neutrals, Playfair Display + Source Sans 3.
+
+   Pakai di SvelteKit:
+     src/app.css
+       @import "tailwindcss";
+       @import "./tokens.css";
+
+   Untuk Tailwind v4, blok @theme inline ada di bagian bawah file.
+   ============================================================ */
+
+/* ---------- Light ---------- */
+:root {
+  --canvas: #fafaf9;
+  --surface: #f5f5f4;
+  --surface-raised: #e7e5e4;
+  --surface-hover: #efeeec;
+  --border: #d6d3d1;
+  --border-strong: #a8a29e;
+
+  --text: #1c1917;
+  --text-secondary: #57534e;
+  --text-muted: #78716c;
+  --text-inverse: #fafaf9;
+
+  --primary: #c2410c;
+  --primary-hover: #9a3412;
+  --primary-active: #7c2d12;
+  --primary-soft: #fff7ed;
+  --primary-ring: rgba(194, 65, 12, 0.14);
+
+  --accent: #f59e0b;
+  --accent-soft: #fffbeb;
+
+  --success: #16a34a;
+  --success-soft: #f0fdf4;
+  --warning: #d97706;
+  --warning-soft: #fffbeb;
+  --error: #dc2626;
+  --error-soft: #fef2f2;
+
+  --status-todo: #78716c;
+  --status-todo-soft: #f5f5f4;
+  --status-progress: #c2410c;
+  --status-progress-soft: #fff7ed;
+  --status-blocked: #dc2626;
+  --status-blocked-soft: #fef2f2;
+  --status-done: #16a34a;
+  --status-done-soft: #f0fdf4;
+
+  --priority-low: #78716c;
+  --priority-low-soft: #f5f5f4;
+  --priority-medium: #b45309;
+  --priority-medium-soft: #fffbeb;
+  --priority-high: #c2410c;
+  --priority-high-soft: #fff7ed;
+  --priority-urgent: #b91c1c;
+  --priority-urgent-soft: #fef2f2;
+
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.05);
+  --shadow-md: 0 4px 16px rgba(28, 25, 23, 0.06);
+  --shadow-lg: 0 24px 48px rgba(28, 25, 23, 0.12);
+  --ring: 0 0 0 3px var(--primary-ring);
+
+  --sidebar-w: 256px;
+  --container: 1200px;
+}
+
+/* ---------- Dark ---------- */
+[data-theme="dark"] {
+  --canvas: #1c1917;
+  --surface: #292524;
+  --surface-raised: #44403c;
+  --surface-hover: #332f2c;
+  --border: #44403c;
+  --border-strong: #57534e;
+
+  --text: #fafaf9;
+  --text-secondary: #d6d3d1;
+  --text-muted: #a8a29e;
+  --text-inverse: #1c1917;
+
+  --primary: #ea580c;
+  --primary-hover: #f97316;
+  --primary-active: #c2410c;
+  --primary-soft: #2a1a12;
+  --primary-ring: rgba(234, 88, 12, 0.28);
+
+  --accent: #fbbf24;
+  --accent-soft: #2a2312;
+
+  --success: #22c55e;
+  --success-soft: #12251a;
+  --warning: #fbbf24;
+  --warning-soft: #2a2312;
+  --error: #f87171;
+  --error-soft: #2a1515;
+
+  --status-todo: #a8a29e;
+  --status-todo-soft: #292524;
+  --status-progress: #fb923c;
+  --status-progress-soft: #2a1a12;
+  --status-blocked: #f87171;
+  --status-blocked-soft: #2a1515;
+  --status-done: #4ade80;
+  --status-done-soft: #12251a;
+
+  --priority-low: #a8a29e;
+  --priority-low-soft: #292524;
+  --priority-medium: #fbbf24;
+  --priority-medium-soft: #2a2312;
+  --priority-high: #fb923c;
+  --priority-high-soft: #2a1a12;
+  --priority-urgent: #f87171;
+  --priority-urgent-soft: #2a1515;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #1c1917;
+    --surface: #292524;
+    --surface-raised: #44403c;
+    --surface-hover: #332f2c;
+    --border: #44403c;
+    --border-strong: #57534e;
+    --text: #fafaf9;
+    --text-secondary: #d6d3d1;
+    --text-muted: #a8a29e;
+    --text-inverse: #1c1917;
+    --primary: #ea580c;
+    --primary-hover: #f97316;
+    --primary-active: #c2410c;
+    --primary-soft: #2a1a12;
+    --primary-ring: rgba(234, 88, 12, 0.28);
+    --accent: #fbbf24;
+    --accent-soft: #2a2312;
+    --success: #22c55e;
+    --success-soft: #12251a;
+    --warning: #fbbf24;
+    --warning-soft: #2a2312;
+    --error: #f87171;
+    --error-soft: #2a1515;
+    --status-todo: #a8a29e;
+    --status-todo-soft: #292524;
+    --status-progress: #fb923c;
+    --status-progress-soft: #2a1a12;
+    --status-blocked: #f87171;
+    --status-blocked-soft: #2a1515;
+    --status-done: #4ade80;
+    --status-done-soft: #12251a;
+    --priority-low: #a8a29e;
+    --priority-low-soft: #292524;
+    --priority-medium: #fbbf24;
+    --priority-medium-soft: #2a2312;
+    --priority-high: #fb923c;
+    --priority-high-soft: #2a1a12;
+    --priority-urgent: #f87171;
+    --priority-urgent-soft: #2a1515;
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+h1 { font-size: 36px; }
+h2 { font-size: 28px; }
+h3 { font-size: 20px; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.01em; }
+
+p { margin: 0; }
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+a:hover { color: var(--primary-hover); }
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Components ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(194, 65, 12, 0.25);
+}
+.btn-primary:active { background: var(--primary-active); transform: translateY(1px); }
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.btn-secondary:hover { background: var(--surface-raised); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover { background: var(--surface); color: var(--text); }
+
+.btn-sm { height: 32px; padding: 0 12px; font-size: 13px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+.input::placeholder { color: var(--text-muted); }
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: var(--ring);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.chip-todo { color: var(--status-todo); background: var(--status-todo-soft); }
+.chip-progress { color: var(--status-progress); background: var(--status-progress-soft); }
+.chip-blocked { color: var(--status-blocked); background: var(--status-blocked-soft); }
+.chip-done { color: var(--status-done); background: var(--status-done-soft); }
+
+.prio-low { color: var(--priority-low); background: var(--priority-low-soft); }
+.prio-medium { color: var(--priority-medium); background: var(--priority-medium-soft); }
+.prio-high { color: var(--priority-high); background: var(--priority-high-soft); }
+.prio-urgent { color: var(--priority-urgent); background: var(--priority-urgent-soft); }
+
+.divider { height: 1px; background: var(--border); border: 0; margin: 0; }
+
+.muted { color: var(--text-muted); }
+.secondary { color: var(--text-secondary); }
+.overline {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ---------- Tailwind v4 mapping ----------
+   Tempel di app.css setelah @import "tailwindcss":
+
+   @theme inline {
+     --color-canvas: var(--canvas);
+     --color-surface: var(--surface);
+     --color-surface-raised: var(--surface-raised);
+     --color-border-base: var(--border);
+     --color-ink: var(--text);
+     --color-ink-secondary: var(--text-secondary);
+     --color-ink-muted: var(--text-muted);
+     --color-primary: var(--primary);
+     --color-primary-hover: var(--primary-hover);
+     --color-accent: var(--accent);
+     --color-success: var(--success);
+     --color-warning: var(--warning);
+     --color-danger: var(--error);
+     --font-display: var(--font-display);
+     --font-sans: var(--font-sans);
+     --radius-card: var(--radius-lg);
+   }
+   ---------------------------------------- */
