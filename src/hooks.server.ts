@@ -11,12 +11,16 @@ import { purgeOldAttempts } from '#lib/server/auth/rate-limit';
 const PURGE_INTERVAL_MS = 60 * 60_000;
 let lastPurge = 0;
 
-function maybePurge(): void {
+function maybePurge(event?: Parameters<Handle>[0]['event']): void {
 	if (Date.now() - lastPurge < PURGE_INTERVAL_MS) return;
 	lastPurge = Date.now();
-	void Promise.allSettled([purgeExpiredSessions(), purgeOldAttempts()]).catch((error) =>
+	const purgeTask = Promise.allSettled([purgeExpiredSessions(), purgeOldAttempts()]).catch((error) =>
 		console.error('[maintenance] gagal membersihkan data lama', error)
 	);
+	const platformContext = event?.platform as { context?: { waitUntil?: (p: Promise<unknown>) => void } } | undefined;
+	if (platformContext?.context?.waitUntil) {
+		platformContext.context.waitUntil(purgeTask);
+	}
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -50,7 +54,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
 	response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
-	if (event.request.method === 'GET') maybePurge();
+	if (event.request.method === 'GET') maybePurge(event);
 
 	return response;
 };

@@ -1,10 +1,8 @@
 import { env } from '$env/dynamic/private';
-import { Pool } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { neon, Pool } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
 import * as schema from './schema';
 
-let cachedDb: ReturnType<typeof drizzle<typeof schema>> | null = null;
-let cachedPool: Pool | null = null;
 let platformEnv: Record<string, string> | null = null;
 
 export function setPlatformEnv(newEnv: unknown) {
@@ -28,20 +26,10 @@ function getConnectionString(): string {
 }
 
 export function getDb() {
-	if (!cachedDb) {
-		const connectionString = getConnectionString();
-		cachedPool = new Pool({ connectionString });
-		cachedDb = drizzle(cachedPool, { schema });
-	}
-	return cachedDb;
+	const connectionString = getConnectionString();
+	const sql = neon(connectionString);
+	return drizzle(sql, { schema });
 }
-
-export const pool = new Proxy({} as Pool, {
-	get(_target, prop) {
-		getDb();
-		return (cachedPool as any)[prop];
-	}
-});
 
 export const db = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
 	get(_target, prop) {
@@ -51,6 +39,15 @@ export const db = new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
 			return val.bind(targetDb);
 		}
 		return val;
+	}
+});
+
+// Backward compatibility for scripts/calls that access pool
+export const pool = new Proxy({} as Pool, {
+	get(_target, prop) {
+		const connectionString = getConnectionString();
+		const p = new Pool({ connectionString });
+		return (p as any)[prop];
 	}
 });
 
