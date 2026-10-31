@@ -21,6 +21,7 @@
 		"#lib/*": "./src/lib/*"
 	},
 	"devDependencies": {
+		"@sveltejs/adapter-cloudflare": "^8.0.2",
 		"@sveltejs/adapter-node": "^6.0.1",
 		"@sveltejs/kit": "^3.1.1",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
@@ -42,6 +43,7 @@
 		"@neon/realtime-drizzle": "^0.1.0",
 		"@neondatabase/serverless": "^1.2.0",
 		"@node-rs/argon2": "^2.2.2",
+		"@node-rs/argon2-wasm32-wasi": "^2.2.2",
 		"drizzle-orm": "^0.45.4",
 		"zod": "^4.6.7"
 	}

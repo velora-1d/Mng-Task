@@ -26,3 +26,4 @@ backup/
 /neon.ts
 .beads/
 kanban/
+.wrangler/
