@@ -16,7 +16,6 @@
 	};
 
 	let { user, orgName = 'Mng-Task', reminderCount = 0, impersonating = false, switchableUsers = [], children }: Props = $props();
-	let menuOpen = $state(false);
 </script>
 
 {#if impersonating}
@@ -27,15 +26,15 @@
 	class="min-h-screen lg:grid lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]"
 	style={impersonating ? 'padding-top: 40px' : ''}
 >
-	<Sidebar bind:open={menuOpen} {user} {orgName} {reminderCount} {impersonating} />
+	<Sidebar {user} {orgName} {reminderCount} {impersonating} />
 
 	<div class="flex min-w-0 flex-col">
-		<Topbar {user} {reminderCount} {switchableUsers} onmenu={() => (menuOpen = true)} />
+		<Topbar {user} {reminderCount} {switchableUsers} />
 
 		<main class="w-full flex-1 px-4 py-5 pb-24 sm:px-6 lg:px-8 lg:pb-8">
 			{@render children()}
 		</main>
 
-		<Bottombar {user} {reminderCount} {switchableUsers} onmenu={() => (menuOpen = true)} />
+		<Bottombar {user} {reminderCount} {switchableUsers} />
 	</div>
 </div>

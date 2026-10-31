@@ -14,24 +14,23 @@
 	};
 
 	let {
-	user,
-	orgName = 'Mng-Task',
-	reminderCount = 0,
-	open = $bindable(false),
-	impersonating = false
-}: Props = $props();
+		user,
+		orgName = 'Mng-Task',
+		reminderCount = 0,
+		impersonating = false
+	}: Props = $props();
 
-let restoring = $state(false);
+	let restoring = $state(false);
 
-async function returnToOwner() {
-	restoring = true;
-	try {
-		const res = await fetch('/api/impersonate/stop', { method: 'POST' });
-		if (res.ok) window.location.href = '/dashboard';
-	} finally {
-		restoring = false;
+	async function returnToOwner() {
+		restoring = true;
+		try {
+			const res = await fetch('/api/impersonate/stop', { method: 'POST' });
+			if (res.ok) window.location.href = '/dashboard';
+		} finally {
+			restoring = false;
+		}
 	}
-}
 
 	type NavItem = { href: string; label: string; icon: IconName; badge?: number; ownerOnly?: boolean };
 
@@ -52,21 +51,8 @@ async function returnToOwner() {
 	const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 </script>
 
-{#if open}
-	<button
-		type="button"
-		class="fixed inset-0 z-30 bg-[rgba(28,25,23,0.45)] backdrop-blur-[2px] lg:hidden"
-		onclick={() => (open = false)}
-		aria-label="Tutup menu"
-	></button>
-{/if}
-
 <aside
-	class={[
-		'fixed inset-y-0 left-0 z-40 flex w-[var(--sidebar-w)] flex-col gap-6 border-r border-border-base bg-surface px-4 py-5 transition-transform duration-200',
-		'lg:sticky lg:top-0 lg:h-screen lg:translate-x-0',
-		open ? 'translate-x-0 shadow-[var(--shadow-lg)]' : '-translate-x-full'
-	].join(' ')}
+	class="hidden lg:flex lg:sticky lg:top-0 lg:h-screen w-[var(--sidebar-w)] flex-col gap-6 border-r border-border-base bg-surface px-4 py-5"
 	aria-label="Navigasi utama"
 >
 	<div class="flex items-center gap-2.5 px-2">

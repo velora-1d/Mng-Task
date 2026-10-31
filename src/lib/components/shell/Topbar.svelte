@@ -7,7 +7,7 @@
 		user: { name: string };
 		reminderCount?: number;
 		switchableUsers?: { id: string; name: string; email: string }[];
-		onmenu: () => void;
+		onmenu?: () => void;
 	};
 
 	let { user, reminderCount = 0, switchableUsers = [], onmenu }: Props = $props();
@@ -79,15 +79,6 @@
 <header
 	class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border-base bg-[color-mix(in_srgb,var(--canvas)_88%,transparent)] px-4 backdrop-blur-md sm:px-6 lg:px-8"
 >
-	<button
-		type="button"
-		class="grid size-9 place-items-center rounded-md border border-border-base bg-surface text-ink-secondary hover:bg-surface-raised lg:hidden"
-		onclick={onmenu}
-		aria-label="Buka menu"
-	>
-		<Icon name="menu" size={18} />
-	</button>
-
 	<a href="/dashboard" class="flex items-center gap-2 lg:hidden">
 		<span class="grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-white">M</span>
 		<span class="font-[family-name:var(--font-display)] font-bold text-ink">Mng-Task</span>
