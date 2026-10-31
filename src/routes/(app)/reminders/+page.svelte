@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Button from '#lib/components/ui/Button.svelte';
 	import Card from '#lib/components/ui/Card.svelte';
 	import Chip from '#lib/components/ui/Chip.svelte';
@@ -199,6 +199,7 @@
 					title = '';
 					note = '';
 				}
+				await applyAction(result);
 			};
 		}}
 		class="stack"

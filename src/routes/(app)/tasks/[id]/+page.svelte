@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Avatar from '#lib/components/ui/Avatar.svelte';
 	import Button from '#lib/components/ui/Button.svelte';
 	import Card from '#lib/components/ui/Card.svelte';
@@ -36,9 +36,10 @@
 
 	function submitDelete() {
 		deleting = true;
-		return async ({ result }: { result: { type: string } }) => {
+		return async ({ result }: { result: any }) => {
 			deleting = false;
 			if (result.type === 'failure') deleteOpen = false;
+			await applyAction(result);
 		};
 	}
 </script>

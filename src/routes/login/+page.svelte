@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import Button from '#lib/components/ui/Button.svelte';
 	import Input from '#lib/components/ui/Input.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
@@ -18,17 +18,17 @@
 		if (form?.email) email = form.email;
 	});
 
-	let error = $derived(form?.error ?? serverError ?? null);
+	let error = $derived(serverError ?? form?.error ?? null);
 
 	function onSubmit() {
 		submitting = true;
 		serverError = null;
-		return async ({ result }: { result: { type: string; data?: unknown } }) => {
+		return async ({ result }: { result: any }) => {
 			submitting = false;
 			if (result.type === 'failure') {
-				const payload = result.data as { error?: string } | undefined;
-				serverError = payload?.error ?? 'Login gagal. Coba lagi.';
+				serverError = result.data?.error ?? 'Login gagal. Coba lagi.';
 			}
+			await applyAction(result);
 		};
 	}
 </script>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/state';
 	import Avatar from '#lib/components/ui/Avatar.svelte';
 	import Button from '#lib/components/ui/Button.svelte';
@@ -243,6 +243,7 @@
 				if (result.type === 'redirect' || result.type === 'success') {
 					createOpen = false;
 				}
+				await applyAction(result);
 			};
 		}}
 		class="stack"
@@ -289,6 +290,7 @@
 				if (result.type === 'redirect' || result.type === 'success') {
 					editOpen = false;
 				}
+				await applyAction(result);
 			};
 		}}
 		class="stack"
@@ -319,6 +321,7 @@
 				if (result.type === 'redirect' || result.type === 'success') {
 					resetOpen = false;
 				}
+				await applyAction(result);
 			};
 		}}
 		class="stack"
