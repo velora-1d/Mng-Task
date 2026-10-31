@@ -408,31 +408,34 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 								<span class="font-mono text-xs text-ink-muted">#{(data.page - 1) * data.perPage + index + 1}</span>
 								<a href={`/tasks/${task.id}`} class="block font-semibold text-ink truncate">{task.title}</a>
 							</div>
-							<div class="flex items-center gap-0.5 shrink-0">
+							<div class="flex items-center gap-1 shrink-0">
 								<a
 									href={`/tasks/${task.id}`}
-									class="grid size-7 place-items-center rounded text-ink-muted hover:text-primary"
+									class="grid size-8.5 place-items-center rounded-lg text-ink-muted hover:bg-surface-raised hover:text-primary active:scale-95 transition"
 									title="Lihat detail"
+									aria-label={`Lihat detail ${task.title}`}
 								>
-									<Icon name="eye" size={14} />
+									<Icon name="eye" size={16} />
 								</a>
 								<a
 									href={`/tasks/${task.id}/edit`}
-									class="grid size-7 place-items-center rounded text-ink-muted hover:text-ink"
+									class="grid size-8.5 place-items-center rounded-lg text-ink-muted hover:bg-surface-raised hover:text-ink active:scale-95 transition"
 									title="Ubah"
+									aria-label={`Ubah ${task.title}`}
 								>
-									<Icon name="edit" size={14} />
+									<Icon name="edit" size={16} />
 								</a>
 								<button
 									type="button"
-									class="grid size-7 place-items-center rounded text-ink-muted hover:text-danger"
+									class="grid size-8.5 place-items-center rounded-lg text-ink-muted hover:bg-danger/10 hover:text-danger active:scale-95 transition"
 									title="Hapus"
+									aria-label={`Hapus ${task.title}`}
 									onclick={() => {
 										taskToDelete = task;
 										singleDeleteDialogOpen = true;
 									}}
 								>
-									<Icon name="trash" size={14} />
+									<Icon name="trash" size={16} />
 								</button>
 							</div>
 						</div>

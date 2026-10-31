@@ -77,7 +77,7 @@
 
 <!-- Bottom Navigation Bar (Full Width Edge-to-Edge with Dynamic Expanding Capsule) -->
 <nav
-	class="fixed bottom-0 inset-x-0 z-40 flex h-16 w-full items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl shadow-lg lg:hidden dark:border-white/10 dark:bg-[#151518]/96"
+	class="fixed bottom-0 inset-x-0 z-40 flex h-16 w-full items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl shadow-lg lg:hidden dark:border-white/10 dark:bg-surface/96"
 	aria-label="Navigasi Bawah Mobile"
 >
 	{#each navItems as item (item.href)}
@@ -86,7 +86,7 @@
 			<!-- Active Pill Capsule -->
 			<a
 				href={item.href}
-				class="flex items-center gap-2 rounded-full border border-stone-200/70 bg-stone-100 py-1 pl-1 pr-3 text-stone-900 shadow-2xs transition-all duration-300 ease-out active:scale-95 dark:border-white/5 dark:bg-[#232328] dark:text-white shrink-0"
+				class="flex items-center gap-2 rounded-full border border-border-base bg-surface-raised py-1 pl-1 pr-3 text-ink shadow-2xs transition-all duration-300 ease-out active:scale-95 shrink-0"
 				aria-current="page"
 				aria-label={item.label}
 			>
@@ -94,7 +94,7 @@
 					<Icon name={item.icon} size={18} class="stroke-[2.4]" />
 					{#if item.badge && item.badge > 0}
 						<span
-							class="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-[#451a03] shadow-xs"
+							class="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-amber-950 shadow-xs"
 						>
 							{item.badge}
 						</span>
@@ -106,14 +106,14 @@
 			<!-- Inactive Circle Button -->
 			<a
 				href={item.href}
-				class="relative grid size-10 place-items-center rounded-full bg-stone-100 text-stone-600 transition-all duration-200 hover:bg-stone-200 hover:text-stone-900 active:scale-95 dark:bg-[#232328]/80 dark:text-stone-400 dark:hover:bg-[#232328] dark:hover:text-white shrink-0"
+				class="relative grid size-10 place-items-center rounded-full bg-surface-raised/80 text-ink-secondary transition-all duration-200 hover:bg-surface-raised hover:text-ink active:scale-95 shrink-0"
 				aria-label={item.label}
 				title={item.label}
 			>
 				<Icon name={item.icon} size={18} />
 				{#if item.badge && item.badge > 0}
 					<span
-						class="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-[#451a03] shadow-xs"
+						class="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-amber-950 shadow-xs"
 					>
 						{item.badge}
 					</span>
@@ -127,7 +127,7 @@
 		<!-- Active Pill for Lainnya -->
 		<button
 			type="button"
-			class="flex items-center gap-2 rounded-full border border-stone-200/70 bg-stone-100 py-1 pl-1 pr-3 text-stone-900 shadow-2xs transition-all duration-300 ease-out active:scale-95 dark:border-white/5 dark:bg-[#232328] dark:text-white shrink-0"
+			class="flex items-center gap-2 rounded-full border border-border-base bg-surface-raised py-1 pl-1 pr-3 text-ink shadow-2xs transition-all duration-300 ease-out active:scale-95 shrink-0"
 			onclick={() => (moreOpen = !moreOpen)}
 			aria-expanded={moreOpen}
 			aria-label="Menu lainnya"
@@ -141,7 +141,7 @@
 		<!-- Inactive Circle for Lainnya -->
 		<button
 			type="button"
-			class="relative grid size-10 place-items-center rounded-full bg-stone-100 text-stone-600 transition-all duration-200 hover:bg-stone-200 hover:text-stone-900 active:scale-95 dark:bg-[#232328]/80 dark:text-stone-400 dark:hover:bg-[#232328] dark:hover:text-white shrink-0"
+			class="relative grid size-10 place-items-center rounded-full bg-surface-raised/80 text-ink-secondary transition-all duration-200 hover:bg-surface-raised hover:text-ink active:scale-95 shrink-0"
 			onclick={() => (moreOpen = !moreOpen)}
 			aria-expanded={moreOpen}
 			aria-label="Menu lainnya"
@@ -187,7 +187,7 @@
 				onclick={() => (moreOpen = false)}
 				aria-label="Tutup"
 			>
-				<Icon name="x" size={18} />
+				<Icon name="close" size={18} />
 			</button>
 		</div>
 

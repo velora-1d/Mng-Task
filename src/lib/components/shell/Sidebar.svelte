@@ -135,7 +135,7 @@
 					<Icon name={item.icon} size={20} class={active ? '!text-white stroke-[2.2]' : '!text-ink-secondary'} />
 					{#if item.badge && item.badge > 0}
 						<span
-							class="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-[#451a03] shadow-xs"
+							class="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-amber-950 shadow-xs"
 						>
 							{item.badge}
 						</span>
@@ -165,7 +165,7 @@
 					<span class="truncate">{item.label}</span>
 					{#if item.badge && item.badge > 0}
 						<span
-							class="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-[#451a03]"
+							class="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-amber-950"
 						>
 							{item.badge}
 						</span>
