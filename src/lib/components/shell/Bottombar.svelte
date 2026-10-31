@@ -77,7 +77,7 @@
 
 <!-- Bottom Navigation Bar (Maksimal 5 item: 4 Menu Utama + 1 Menu Garis 3 'Lainnya') -->
 <nav
-	class="fixed bottom-0 inset-x-0 z-30 flex h-16 items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--canvas)_94%,transparent)] px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-md shadow-lg lg:hidden"
+	class="fixed bottom-0 inset-x-0 z-40 flex h-16 items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg shadow-lg lg:hidden"
 	aria-label="Navigasi Bawah Mobile"
 >
 	{#each navItems as item (item.href)}

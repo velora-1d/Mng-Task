@@ -228,7 +228,7 @@
 
 {#if selectedReportIds.length > 0}
 	<div
-		class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-wrap items-center gap-2.5 rounded-xl border border-border-strong bg-surface px-4 py-2.5 shadow-2xl backdrop-blur-md"
+		class="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-wrap items-center gap-2.5 rounded-xl border border-border-strong bg-surface px-4 py-2.5 shadow-2xl backdrop-blur-md"
 		role="toolbar"
 		aria-label="Aksi masal laporan"
 	>
