@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLInputAttributes } from 'svelte/elements';
+	import Icon from './Icon.svelte';
 
 	type Props = Omit<HTMLInputAttributes, 'children'> & {
 		label: string;
@@ -8,7 +9,7 @@
 		error?: string | null | undefined;
 		/** Sembunyikan label secara visual, tetap terbaca screen reader. */
 		hideLabel?: boolean;
-		/** Konten di dalam input, misalnya tombol tampilkan kata sandi. */
+		/** Konten di dalam input, misalnya tombol custom. */
 		trailing?: Snippet;
 	};
 
@@ -21,8 +22,13 @@
 		value = $bindable(''),
 		class: cls = '',
 		id,
+		type = 'text',
 		...rest
 	}: Props = $props();
+
+	let showPassword = $state(false);
+	let isPassword = $derived(type === 'password');
+	let effectiveType = $derived(isPassword ? (showPassword ? 'text' : 'password') : type);
 
 	const uid = $props.id();
 	let inputId = $derived(id ?? `field-${uid}`);
@@ -42,10 +48,11 @@
 		<input
 			id={inputId}
 			bind:value
+			type={effectiveType}
 			class={[
 				'input',
 				error ? 'border-danger focus:border-danger' : '',
-				trailing ? 'pr-11' : '',
+				trailing || isPassword ? 'pr-11' : '',
 				cls
 			].join(' ')}
 			aria-invalid={error ? 'true' : undefined}
@@ -55,6 +62,20 @@
 		{#if trailing}
 			<div class="absolute inset-y-0 right-1 flex items-center">
 				{@render trailing()}
+			</div>
+		{:else if isPassword}
+			<div class="absolute inset-y-0 right-1 flex items-center">
+				<button
+					type="button"
+					class="grid size-8 place-items-center rounded-md text-ink-muted hover:bg-surface-raised hover:text-ink transition-colors"
+					onclick={() => (showPassword = !showPassword)}
+					aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+					title={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+					aria-pressed={showPassword}
+					tabindex="-1"
+				>
+					<Icon name={showPassword ? 'eyeOff' : 'eye'} size={17} />
+				</button>
 			</div>
 		{/if}
 	</div>

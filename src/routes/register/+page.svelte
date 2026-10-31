@@ -126,29 +126,17 @@
 				<Input
 					label="Kata sandi"
 					name="password"
-					type={showPassword ? 'text' : 'password'}
+					type="password"
 					autocomplete="new-password"
 					required
 					bind:value={password}
 					placeholder="Minimal 6 karakter"
-				>
-					{#snippet trailing()}
-						<button
-							type="button"
-							class="grid size-8 place-items-center rounded-md text-ink-muted hover:bg-surface-raised hover:text-ink"
-							onclick={() => (showPassword = !showPassword)}
-							aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-							aria-pressed={showPassword}
-						>
-							<Icon name={showPassword ? 'moon' : 'sun'} size={16} />
-						</button>
-					{/snippet}
-				</Input>
+				/>
 
 				<Input
 					label="Konfirmasi Kata sandi"
 					name="confirmPassword"
-					type={showPassword ? 'text' : 'password'}
+					type="password"
 					autocomplete="new-password"
 					required
 					bind:value={confirmPassword}
