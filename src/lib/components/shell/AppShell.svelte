@@ -36,6 +36,6 @@
 			{@render children()}
 		</main>
 
-		<Bottombar {user} {reminderCount} onmenu={() => (menuOpen = true)} />
+		<Bottombar {user} {reminderCount} {switchableUsers} onmenu={() => (menuOpen = true)} />
 	</div>
 </div>

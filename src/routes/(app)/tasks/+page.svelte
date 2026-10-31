@@ -98,11 +98,7 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 			{data.total} task{data.isOwner ? '' : ' milikmu'} · {data.items.length} ditampilkan
 		</p>
 	</div>
-	<div class="flex flex-wrap gap-2">
-		<a href={`/tasks/export.csv${page.url.search}`} class="btn btn-secondary">
-			<Icon name="download" size={16} />
-			Export CSV
-		</a>
+	<div class="flex w-full sm:w-auto items-center justify-between sm:justify-start gap-2">
 		<div class="flex items-center rounded-lg border border-border-base bg-surface p-0.5" role="group" aria-label="Mode tampilan">
 			<button
 				type="button"
@@ -124,8 +120,17 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 			</button>
 		</div>
 
-		<a href="/tasks/new" class="btn btn-primary min-h-[38px] px-3.5">
-			<Icon name="plus" size={16} />
+		<a
+			href={`/tasks/export.csv${page.url.search}`}
+			class="btn btn-secondary px-2.5 py-1.5 text-xs min-h-[36px]"
+			title="Export CSV"
+		>
+			<Icon name="download" size={15} />
+			<span class="hidden sm:inline">Export CSV</span>
+		</a>
+
+		<a href="/tasks/new" class="btn btn-primary px-3 py-1.5 text-xs min-h-[36px] ml-auto sm:ml-0">
+			<Icon name="plus" size={15} />
 			Buat task
 		</a>
 	</div>
@@ -202,8 +207,14 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 		{/if}
 	</div>
 
-	<div class="mt-2 flex flex-wrap items-center gap-2">
-		<select name="sort" class="h-8 rounded-md border border-border-base bg-canvas px-2 text-xs" aria-label="Urutkan">
+	<!-- Baris Opsi Lanjutan: Urutan, Limit, dan Aksi Terapkan/Reset -->
+	<div class="mt-2.5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
+		<select
+			name="sort"
+			class="h-9 w-full rounded-md border border-border-base bg-canvas px-2 text-xs text-ink sm:w-auto"
+			aria-label="Urutkan"
+			onchange={(e) => e.currentTarget.form?.requestSubmit()}
+		>
 			<option value="created" selected={data.filters.sort === 'created'}>Terbaru dibuat</option>
 			<option value="due_asc" selected={data.filters.sort === 'due_asc'}>Deadline terdekat</option>
 			<option value="due_desc" selected={data.filters.sort === 'due_desc'}>Deadline terlama</option>
@@ -212,15 +223,25 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 			<option value="updated" selected={data.filters.sort === 'updated'}>Terakhir diubah</option>
 		</select>
 
-		<select name="perPage" class="h-8 rounded-md border border-border-base bg-canvas px-2 text-xs" aria-label="Baris per halaman">
+		<select
+			name="perPage"
+			class="h-9 w-full rounded-md border border-border-base bg-canvas px-2 text-xs text-ink sm:w-auto"
+			aria-label="Baris per halaman"
+			onchange={(e) => e.currentTarget.form?.requestSubmit()}
+		>
 			{#each data.perPageOptions as option (option)}
 				<option value={option} selected={data.filters.perPage === option}>{option} / halaman</option>
 			{/each}
 		</select>
 
-		<button type="submit" class="btn btn-secondary btn-sm">Terapkan</button>
+		<button type="submit" class="btn btn-secondary btn-sm h-9 w-full sm:w-auto">
+			Terapkan
+		</button>
+
 		{#if hasFilter}
-			<a href={resetHref()} class="btn btn-ghost btn-sm">Reset filter</a>
+			<a href={resetHref()} class="btn btn-ghost btn-sm h-9 w-full text-center sm:w-auto">
+				Reset filter
+			</a>
 		{/if}
 	</div>
 </form>
