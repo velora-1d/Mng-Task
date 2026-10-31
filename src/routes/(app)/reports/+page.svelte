@@ -4,6 +4,7 @@
 	import Card from '#lib/components/ui/Card.svelte';
 	import Chip from '#lib/components/ui/Chip.svelte';
 	import Dialog from '#lib/components/ui/Dialog.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
 	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import Input from '#lib/components/ui/Input.svelte';
@@ -19,6 +20,43 @@
 	let viewOpen = $state(false);
 	let selectedReport = $state<any>(null);
 	let editNotes = $state('');
+
+	let selectedReportIds = $state<string[]>([]);
+	let bulkBusy = $state(false);
+
+	let reportToDelete = $state<any>(null);
+	let singleDeleteDialogOpen = $state(false);
+	let bulkDeleteDialogOpen = $state(false);
+	let singleDeleting = $state(false);
+	let editNotesModalOpen = $state(false);
+
+	$effect(() => {
+		data.reports;
+		selectedReportIds = [];
+	});
+
+	const allReportsSelected = $derived(
+		data.reports.length > 0 && selectedReportIds.length === data.reports.length
+	);
+	const someReportsSelected = $derived(
+		selectedReportIds.length > 0 && selectedReportIds.length < data.reports.length
+	);
+
+	function toggleAllReports() {
+		if (allReportsSelected) {
+			selectedReportIds = [];
+		} else {
+			selectedReportIds = data.reports.map((r) => r.id);
+		}
+	}
+
+	function toggleOneReport(id: string) {
+		if (selectedReportIds.includes(id)) {
+			selectedReportIds = selectedReportIds.filter((item) => item !== id);
+		} else {
+			selectedReportIds = [...selectedReportIds, id];
+		}
+	}
 
 	// Form values
 	let type = $state<ReportType>('WEEKLY');
@@ -88,6 +126,17 @@
 			<table class="data-table">
 				<thead>
 					<tr>
+						<th class="w-10 text-center">
+							<input
+								type="checkbox"
+								checked={allReportsSelected}
+								indeterminate={someReportsSelected}
+								onchange={toggleAllReports}
+								class="size-4 cursor-pointer rounded border-border-strong text-primary focus:ring-primary"
+								aria-label="Pilih semua laporan"
+							/>
+						</th>
+						<th class="w-12 text-center">No</th>
 						<th>Tipe</th>
 						<th>Periode</th>
 						<th>Dibuat Oleh</th>
@@ -97,9 +146,21 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each data.reports as r (r.id)}
+					{#each data.reports as r, index (r.id)}
 						{@const stats = parseStats(r.statsJson)}
-						<tr>
+						<tr class={selectedReportIds.includes(r.id) ? 'bg-primary-soft/40' : ''}>
+							<td class="text-center">
+								<input
+									type="checkbox"
+									checked={selectedReportIds.includes(r.id)}
+									onchange={() => toggleOneReport(r.id)}
+									class="size-4 cursor-pointer rounded border-border-strong text-primary focus:ring-primary"
+									aria-label={`Pilih laporan ${r.periodStart}`}
+								/>
+							</td>
+							<td class="text-center font-mono text-xs text-ink-muted">
+								{index + 1}
+							</td>
 							<td>
 								<Chip tone="progress">{REPORT_TYPE_LABEL[r.type as ReportType] ?? r.type}</Chip>
 							</td>
@@ -125,19 +186,37 @@
 							</td>
 							<td class="text-right">
 								<div class="flex items-center justify-end gap-1">
-									<Button variant="ghost" size="sm" onclick={() => openDetail(r)}>
-										Lihat snapshot
-									</Button>
-									<form method="POST" action="?/delete" use:enhance class="inline-block">
-										<input type="hidden" name="id" value={r.id} />
-										<button
-											type="submit"
-											class="grid size-8 place-items-center rounded text-ink-muted hover:bg-surface-raised hover:text-danger"
-											title="Hapus laporan"
-										>
-											<Icon name="trash" size={15} />
-										</button>
-									</form>
+									<button
+										type="button"
+										class="grid size-8 place-items-center rounded text-ink-muted hover:bg-surface-raised hover:text-primary"
+										title="Lihat snapshot laporan"
+										onclick={() => openDetail(r)}
+									>
+										<Icon name="eye" size={15} />
+									</button>
+									<button
+										type="button"
+										class="grid size-8 place-items-center rounded text-ink-muted hover:bg-surface-raised hover:text-ink"
+										title="Ubah catatan laporan"
+										onclick={() => {
+											selectedReport = r;
+											editNotes = r.notes ?? '';
+											editNotesModalOpen = true;
+										}}
+									>
+										<Icon name="edit" size={15} />
+									</button>
+									<button
+										type="button"
+										class="grid size-8 place-items-center rounded text-ink-muted hover:bg-surface-raised hover:text-danger"
+										title="Hapus laporan"
+										onclick={() => {
+											reportToDelete = r;
+											singleDeleteDialogOpen = true;
+										}}
+									>
+										<Icon name="trash" size={15} />
+									</button>
 								</div>
 							</td>
 						</tr>
@@ -147,6 +226,143 @@
 		</div>
 	{/if}
 </div>
+
+{#if selectedReportIds.length > 0}
+	<div
+		class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-wrap items-center gap-2.5 rounded-xl border border-border-strong bg-surface px-4 py-2.5 shadow-2xl backdrop-blur-md"
+		role="toolbar"
+		aria-label="Aksi masal laporan"
+	>
+		<span class="text-xs font-bold text-ink">
+			{selectedReportIds.length} laporan terpilih
+		</span>
+
+		<div class="h-4 w-px bg-border-base"></div>
+
+		<!-- Tombol trigger modal Hapus Masal -->
+		<button
+			type="button"
+			disabled={bulkBusy}
+			class="btn btn-danger btn-sm text-xs"
+			onclick={() => (bulkDeleteDialogOpen = true)}
+		>
+			<Icon name="trash" size={13} />
+			Hapus
+		</button>
+
+		<button
+			type="button"
+			class="btn btn-ghost btn-sm text-xs text-ink-muted hover:text-ink"
+			onclick={() => (selectedReportIds = [])}
+		>
+			Batal
+		</button>
+	</div>
+{/if}
+
+<!-- Hidden Form for Bulk Delete -->
+<form
+	id="bulkDeleteReportForm"
+	method="POST"
+	action="?/bulkDelete"
+	class="hidden"
+	use:enhance={() => {
+		bulkBusy = true;
+		return async ({ result }) => {
+			bulkBusy = false;
+			bulkDeleteDialogOpen = false;
+			selectedReportIds = [];
+			await applyAction(result);
+		};
+	}}
+>
+	{#each selectedReportIds as id}
+		<input type="hidden" name="ids" value={id} />
+	{/each}
+</form>
+
+<!-- Hidden Form for Single Delete -->
+<form
+	id="singleDeleteReportForm"
+	method="POST"
+	action="?/delete"
+	class="hidden"
+	use:enhance={() => {
+		singleDeleting = true;
+		return async ({ result }) => {
+			singleDeleting = false;
+			singleDeleteDialogOpen = false;
+			reportToDelete = null;
+			await applyAction(result);
+		};
+	}}
+>
+	<input type="hidden" name="id" value={reportToDelete?.id} />
+</form>
+
+<!-- Modal Konfirmasi Hapus Single (Custom Estetik) -->
+<ConfirmDialog
+	bind:open={singleDeleteDialogOpen}
+	title="Hapus laporan?"
+	message={`Snapshot laporan periode ${reportToDelete?.periodStart ?? ''} s/d ${reportToDelete?.periodEnd ?? ''} akan dihapus secara permanen.`}
+	confirmLabel="Ya, hapus laporan"
+	cancelLabel="Batal"
+	variant="danger"
+	loading={singleDeleting}
+	onconfirm={() => {
+		const formEl = document.getElementById('singleDeleteReportForm') as HTMLFormElement;
+		formEl?.requestSubmit();
+	}}
+/>
+
+<!-- Modal Konfirmasi Hapus Masal (Custom Estetik) -->
+<ConfirmDialog
+	bind:open={bulkDeleteDialogOpen}
+	title="Hapus laporan terpilih?"
+	message={`Apakah kamu yakin ingin menghapus ${selectedReportIds.length} snapshot laporan yang dipilih?`}
+	confirmLabel={`Ya, hapus ${selectedReportIds.length} laporan`}
+	cancelLabel="Batal"
+	variant="danger"
+	loading={bulkBusy}
+	onconfirm={() => {
+		const formEl = document.getElementById('bulkDeleteReportForm') as HTMLFormElement;
+		formEl?.requestSubmit();
+	}}
+/>
+
+<!-- Modal Edit Catatan Laporan Terpisah (Custom Estetik) -->
+<Dialog
+	bind:open={editNotesModalOpen}
+	title="Ubah Catatan Laporan"
+	description={`Edit evaluasi/catatan untuk periode ${selectedReport?.periodStart} s/d ${selectedReport?.periodEnd}.`}
+>
+	{#if selectedReport}
+		<form
+			method="POST"
+			action="?/updateNotes"
+			use:enhance={() => {
+				return async ({ result }) => {
+					editNotesModalOpen = false;
+					await applyAction(result);
+				};
+			}}
+			class="stack"
+		>
+			<input type="hidden" name="id" value={selectedReport.id} />
+			<Textarea
+				label="Catatan Analisis Laporan"
+				name="notes"
+				rows={4}
+				bind:value={editNotes}
+				placeholder="Tuliskan evaluasi kinerja atau catatan penting..."
+			/>
+			<div class="mt-4 flex justify-end gap-2">
+				<Button variant="secondary" onclick={() => (editNotesModalOpen = false)}>Batal</Button>
+				<Button type="submit">Simpan catatan</Button>
+			</div>
+		</form>
+	{/if}
+</Dialog>
 
 <!-- Modal Generate Laporan -->
 <Dialog

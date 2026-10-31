@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, isNull, like, ne, or, sql, type SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray, isNull, like, ne, or, sql, type SQL } from 'drizzle-orm';
 import { db } from '../db/client';
 import { tasks, users } from '../db/schema';
 import type { SessionUser } from '../auth/session';
@@ -501,4 +501,59 @@ export async function completedTrend(user: Pick<SessionUser, 'id' | 'role'>): Pr
 			count: map.get(date) ?? 0
 		};
 	});
+}
+
+/** Hapus masal tugas (soft delete) yang diizinkan untuk user saat ini. */
+export async function bulkDeleteTasks(
+	ids: string[],
+	user: Pick<SessionUser, 'id' | 'role'>
+): Promise<{ deletedCount: number; deletedIds: string[] }> {
+	if (ids.length === 0) return { deletedCount: 0, deletedIds: [] };
+	const now = new Date().toISOString();
+
+	const where =
+		user.role === 'OWNER'
+			? and(inArray(tasks.id, ids), notDeleted())
+			: and(inArray(tasks.id, ids), eq(tasks.createdBy, user.id), notDeleted());
+
+	const matching = await db.select({ id: tasks.id }).from(tasks).where(where);
+	const targetIds = matching.map((t) => t.id);
+
+	if (targetIds.length > 0) {
+		await db
+			.update(tasks)
+			.set({ deletedAt: now, updatedAt: now })
+			.where(inArray(tasks.id, targetIds));
+	}
+
+	return { deletedCount: targetIds.length, deletedIds: targetIds };
+}
+
+/** Update status masal untuk tugas yang berada dalam cakupan user saat ini. */
+export async function bulkUpdateStatusTasks(
+	ids: string[],
+	status: TaskStatus,
+	user: Pick<SessionUser, 'id' | 'role'>
+): Promise<{ updatedCount: number; updatedIds: string[] }> {
+	if (ids.length === 0) return { updatedCount: 0, updatedIds: [] };
+	const now = new Date().toISOString();
+
+	const scope = scopedWhere(user);
+	const where = and(inArray(tasks.id, ids), scope, notDeleted());
+
+	const matching = await db.select({ id: tasks.id }).from(tasks).where(where);
+	const targetIds = matching.map((t) => t.id);
+
+	if (targetIds.length > 0) {
+		await db
+			.update(tasks)
+			.set({
+				status,
+				completedAt: status === 'DONE' ? now : null,
+				updatedAt: now
+			})
+			.where(inArray(tasks.id, targetIds));
+	}
+
+	return { updatedCount: targetIds.length, updatedIds: targetIds };
 }

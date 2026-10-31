@@ -10,6 +10,7 @@
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import Input from '#lib/components/ui/Input.svelte';
 	import Pagination from '#lib/components/ui/Pagination.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
 	import Select from '#lib/components/ui/Select.svelte';
 	import { formatDateTime } from '#lib/utils/date';
 	import type { PageProps } from './$types';
@@ -19,8 +20,13 @@
 	let createOpen = $state(false);
 	let editOpen = $state(false);
 	let resetOpen = $state(false);
+	let detailOpen = $state(false);
 
 	let selectedUser = $state<any>(null);
+	let userToDeactivate = $state<any>(null);
+	let deactivateDialogOpen = $state(false);
+	let bulkDeactivateOpen = $state(false);
+	let deactivating = $state(false);
 
 	// Form values
 	let name = $state('');
@@ -29,6 +35,33 @@
 	let role = $state('USER');
 
 	let newPassword = $state('');
+
+	let selectedIds = $state<string[]>([]);
+	let bulkBusy = $state(false);
+
+	$effect(() => {
+		data.items;
+		selectedIds = [];
+	});
+
+	const allSelected = $derived(data.items.length > 0 && selectedIds.length === data.items.length);
+	const someSelected = $derived(selectedIds.length > 0 && selectedIds.length < data.items.length);
+
+	function toggleAll() {
+		if (allSelected) {
+			selectedIds = [];
+		} else {
+			selectedIds = data.items.map((u) => u.id);
+		}
+	}
+
+	function toggleOne(id: string) {
+		if (selectedIds.includes(id)) {
+			selectedIds = selectedIds.filter((item) => item !== id);
+		} else {
+			selectedIds = [...selectedIds, id];
+		}
+	}
 
 	function openEdit(u: any) {
 		selectedUser = u;
@@ -146,6 +179,17 @@
 			<table class="data-table">
 				<thead>
 					<tr>
+						<th class="w-10 text-center">
+							<input
+								type="checkbox"
+								checked={allSelected}
+								indeterminate={someSelected}
+								onchange={toggleAll}
+								class="size-4 cursor-pointer rounded border-border-strong text-primary focus:ring-primary"
+								aria-label="Pilih semua pengguna"
+							/>
+						</th>
+						<th class="w-12 text-center">No</th>
 						<th>Pengguna</th>
 						<th>Role</th>
 						<th>Status</th>
@@ -155,8 +199,20 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each data.items as u (u.id)}
-						<tr>
+					{#each data.items as u, index (u.id)}
+						<tr class={selectedIds.includes(u.id) ? 'bg-primary-soft/40' : ''}>
+							<td class="text-center">
+								<input
+									type="checkbox"
+									checked={selectedIds.includes(u.id)}
+									onchange={() => toggleOne(u.id)}
+									class="size-4 cursor-pointer rounded border-border-strong text-primary focus:ring-primary"
+									aria-label={`Pilih ${u.name}`}
+								/>
+							</td>
+							<td class="text-center font-mono text-xs text-ink-muted">
+								{(data.page - 1) * data.perPage + index + 1}
+							</td>
 							<td>
 								<div class="flex items-center gap-2.5">
 									<Avatar name={u.name} size="md" />
@@ -186,6 +242,17 @@
 								<div class="flex items-center justify-end gap-1">
 									<button
 										type="button"
+										class="grid size-8 place-items-center rounded text-ink-muted hover:bg-surface-raised hover:text-primary"
+										title="Lihat detail pengguna"
+										onclick={() => {
+											selectedUser = u;
+											detailOpen = true;
+										}}
+									>
+										<Icon name="eye" size={15} />
+									</button>
+									<button
+										type="button"
 										class="grid size-8 place-items-center rounded text-ink-muted hover:bg-surface-raised hover:text-ink"
 										title="Ubah info pengguna"
 										onclick={() => openEdit(u)}
@@ -201,17 +268,31 @@
 										<Icon name="shield" size={15} />
 									</button>
 
-									<form method="POST" action="?/toggleActive" use:enhance class="inline-block">
-										<input type="hidden" name="id" value={u.id} />
-										<input type="hidden" name="active" value={u.isActive ? 'false' : 'true'} />
+									{#if u.isActive}
 										<button
-											type="submit"
-											class="btn btn-ghost btn-sm text-xs {u.isActive ? 'hover:text-danger' : 'text-success'}"
-											title={u.isActive ? 'Nonaktifkan akun' : 'Aktifkan akun'}
+											type="button"
+											class="btn btn-ghost btn-sm text-xs hover:text-danger"
+											title="Nonaktifkan akun"
+											onclick={() => {
+												userToDeactivate = u;
+												deactivateDialogOpen = true;
+											}}
 										>
-											{u.isActive ? 'Nonaktifkan' : 'Aktifkan'}
+											Nonaktifkan
 										</button>
-									</form>
+									{:else}
+										<form method="POST" action="?/toggleActive" use:enhance class="inline-block">
+											<input type="hidden" name="id" value={u.id} />
+											<input type="hidden" name="active" value="true" />
+											<button
+												type="submit"
+												class="btn btn-ghost btn-sm text-xs text-success hover:bg-success/10"
+												title="Aktifkan akun"
+											>
+												Aktifkan
+											</button>
+										</form>
+									{/if}
 								</div>
 							</td>
 						</tr>
@@ -228,6 +309,207 @@
 		/>
 	{/if}
 </div>
+
+{#if selectedIds.length > 0}
+	<div
+		class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-wrap items-center gap-2.5 rounded-xl border border-border-strong bg-surface px-4 py-2.5 shadow-2xl backdrop-blur-md"
+		role="toolbar"
+		aria-label="Aksi masal pengguna"
+	>
+		<span class="text-xs font-bold text-ink">
+			{selectedIds.length} pengguna terpilih
+		</span>
+
+		<div class="h-4 w-px bg-border-base"></div>
+
+		<!-- Aktifkan Masal -->
+		<form
+			method="POST"
+			action="?/bulkToggleActive"
+			use:enhance={() => {
+				bulkBusy = true;
+				return async ({ result }) => {
+					bulkBusy = false;
+					if (result.type === 'success' || result.type === 'redirect') {
+						selectedIds = [];
+					}
+					await applyAction(result);
+				};
+			}}
+		>
+			{#each selectedIds as id}
+				<input type="hidden" name="ids" value={id} />
+			{/each}
+			<input type="hidden" name="active" value="true" />
+			<button
+				type="submit"
+				disabled={bulkBusy}
+				class="btn btn-secondary btn-sm text-xs text-success hover:bg-success/10"
+			>
+				Aktifkan
+			</button>
+		</form>
+
+		<!-- Tombol trigger modal Nonaktifkan Masal -->
+		<button
+			type="button"
+			disabled={bulkBusy}
+			class="btn btn-secondary btn-sm text-xs text-danger hover:bg-danger/10"
+			onclick={() => (bulkDeactivateOpen = true)}
+		>
+			Nonaktifkan
+		</button>
+
+		<button
+			type="button"
+			class="btn btn-ghost btn-sm text-xs text-ink-muted hover:text-ink"
+			onclick={() => (selectedIds = [])}
+		>
+			Batal
+		</button>
+	</div>
+{/if}
+
+<!-- Hidden Form for Bulk Deactivate -->
+<form
+	id="bulkDeactivateForm"
+	method="POST"
+	action="?/bulkToggleActive"
+	class="hidden"
+	use:enhance={() => {
+		bulkBusy = true;
+		return async ({ result }) => {
+			bulkBusy = false;
+			bulkDeactivateOpen = false;
+			if (result.type === 'success' || result.type === 'redirect') {
+				selectedIds = [];
+			}
+			await applyAction(result);
+		};
+	}}
+>
+	{#each selectedIds as id}
+		<input type="hidden" name="ids" value={id} />
+	{/each}
+	<input type="hidden" name="active" value="false" />
+</form>
+
+<!-- Hidden Form for Single Deactivate -->
+<form
+	id="singleDeactivateForm"
+	method="POST"
+	action="?/toggleActive"
+	class="hidden"
+	use:enhance={() => {
+		deactivating = true;
+		return async ({ result }) => {
+			deactivating = false;
+			deactivateDialogOpen = false;
+			userToDeactivate = null;
+			await applyAction(result);
+		};
+	}}
+>
+	<input type="hidden" name="id" value={userToDeactivate?.id} />
+	<input type="hidden" name="active" value="false" />
+</form>
+
+<!-- Modal Konfirmasi Nonaktifkan User (Custom Estetik) -->
+<ConfirmDialog
+	bind:open={deactivateDialogOpen}
+	title="Nonaktifkan pengguna?"
+	message={`Akun "${userToDeactivate?.name ?? ''}" (${userToDeactivate?.email ?? ''}) akan dinonaktifkan dan semua sesi login aktifnya akan langsung dicabut.`}
+	confirmLabel="Ya, nonaktifkan"
+	cancelLabel="Batal"
+	variant="danger"
+	loading={deactivating}
+	onconfirm={() => {
+		const formEl = document.getElementById('singleDeactivateForm') as HTMLFormElement;
+		formEl?.requestSubmit();
+	}}
+/>
+
+<!-- Modal Konfirmasi Nonaktifkan Masal (Custom Estetik) -->
+<ConfirmDialog
+	bind:open={bulkDeactivateOpen}
+	title="Nonaktifkan pengguna terpilih?"
+	message={`Apakah kamu yakin ingin menonaktifkan ${selectedIds.length} akun pengguna yang dipilih? Sesi login mereka akan dicabut.`}
+	confirmLabel={`Ya, nonaktifkan ${selectedIds.length} pengguna`}
+	cancelLabel="Batal"
+	variant="danger"
+	loading={bulkBusy}
+	onconfirm={() => {
+		const formEl = document.getElementById('bulkDeactivateForm') as HTMLFormElement;
+		formEl?.requestSubmit();
+	}}
+/>
+
+<!-- Modal Detail Pengguna (Custom Estetik) -->
+<Dialog
+	bind:open={detailOpen}
+	title="Detail Pengguna"
+	description="Informasi lengkap akun anggota tim."
+>
+	{#if selectedUser}
+		<div class="stack">
+			<div class="flex items-center gap-3 border-b border-border-base pb-4">
+				<Avatar name={selectedUser.name} size="lg" />
+				<div>
+					<h3 class="font-bold text-ink">{selectedUser.name}</h3>
+					<p class="text-xs text-ink-muted">{selectedUser.email}</p>
+					<div class="mt-1 flex items-center gap-1.5">
+						<Chip tone={selectedUser.role === 'OWNER' ? 'urgent' : 'neutral'}>
+							{selectedUser.role === 'OWNER' ? 'Owner' : 'User'}
+						</Chip>
+						<Chip tone={selectedUser.isActive ? 'done' : 'blocked'}>
+							{selectedUser.isActive ? 'Aktif' : 'Nonaktif'}
+						</Chip>
+					</div>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-2 gap-3 text-xs">
+				<div class="surface-card p-3">
+					<span class="text-ink-muted">User ID</span>
+					<p class="mt-1 font-mono font-semibold text-ink break-all">{selectedUser.id}</p>
+				</div>
+				<div class="surface-card p-3">
+					<span class="text-ink-muted">Ganti Password Wajib</span>
+					<p class="mt-1 font-semibold text-ink">
+						{selectedUser.mustChangePassword ? 'Ya' : 'Tidak'}
+					</p>
+				</div>
+				<div class="surface-card p-3">
+					<span class="text-ink-muted">Terakhir Aktif</span>
+					<p class="mt-1 font-semibold text-ink">
+						{selectedUser.lastSeenAt ? formatDateTime(selectedUser.lastSeenAt) : 'Belum pernah'}
+					</p>
+				</div>
+				<div class="surface-card p-3">
+					<span class="text-ink-muted">Akun Dibuat</span>
+					<p class="mt-1 font-semibold text-ink">{formatDateTime(selectedUser.createdAt)}</p>
+				</div>
+			</div>
+
+			<div class="mt-3 flex justify-end gap-2 border-t border-border-base pt-3">
+				<Button variant="secondary" size="sm" onclick={() => (detailOpen = false)}>
+					Tutup
+				</Button>
+				<Button
+					variant="primary"
+					size="sm"
+					onclick={() => {
+						detailOpen = false;
+						openEdit(selectedUser);
+					}}
+				>
+					<Icon name="edit" size={14} />
+					Ubah data
+				</Button>
+			</div>
+		</div>
+	{/if}
+</Dialog>
 
 <!-- Modal Tambah Pengguna -->
 <Dialog

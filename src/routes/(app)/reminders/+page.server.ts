@@ -1,11 +1,14 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { requireUser } from '#lib/server/auth/guards';
 import {
+	bulkDeleteManualReminders,
+	bulkToggleManualReminders,
 	createManualReminder,
 	deleteManualReminder,
 	getAutoReminders,
 	getManualReminders,
-	toggleReminderStatus
+	toggleReminderStatus,
+	updateManualReminder
 } from '#lib/server/queries/reminders';
 import { listTasks } from '#lib/server/queries/tasks';
 import { recordAudit } from '#lib/server/audit';
@@ -83,6 +86,53 @@ export const actions = {
 		redirect(303, '/reminders?created=1');
 	},
 
+	update: async ({ request, locals, url, getClientAddress }) => {
+		const user = requireUser(locals, url);
+		const data = await request.formData();
+		const id = String(data.get('id') ?? '');
+
+		const raw = {
+			title: String(data.get('title') ?? ''),
+			note: String(data.get('note') ?? ''),
+			remindAtDate: String(data.get('remindAtDate') ?? ''),
+			remindAtTime: String(data.get('remindAtTime') ?? ''),
+			taskId: String(data.get('taskId') ?? '')
+		};
+
+		const parsed = reminderSchema.safeParse(raw);
+		if (!parsed.success) {
+			return fail(400, {
+				values: raw,
+				error: parsed.error.issues[0]?.message ?? 'Input tidak valid'
+			});
+		}
+
+		const localIsoStr = `${parsed.data.remindAtDate}T${parsed.data.remindAtTime}:00+07:00`;
+		const utcDate = new Date(localIsoStr);
+		if (isNaN(utcDate.getTime())) {
+			return fail(400, { values: raw, error: 'Waktu pengingat tidak valid' });
+		}
+
+		await updateManualReminder(id, user.id, {
+			title: parsed.data.title,
+			note: parsed.data.note,
+			remindAt: utcDate.toISOString(),
+			taskId: parsed.data.taskId || null
+		});
+
+		await recordAudit({
+			actorId: user.id,
+			action: 'reminder.update_info',
+			entityType: 'reminder',
+			entityId: id,
+			after: { title: parsed.data.title, remindAt: utcDate.toISOString() },
+			ip: getClientAddress(),
+			userAgent: request.headers.get('user-agent')
+		});
+
+		redirect(303, '/reminders?updated=1');
+	},
+
 	toggle: async ({ request, locals, url, getClientAddress }) => {
 		const user = requireUser(locals, url);
 		const data = await request.formData();
@@ -123,5 +173,68 @@ export const actions = {
 		});
 
 		redirect(303, '/reminders?deleted=1');
+	},
+
+	bulkDelete: async ({ request, locals, url, getClientAddress }) => {
+		const user = requireUser(locals, url);
+		const data = await request.formData();
+		const rawIds = data.getAll('ids').map(String);
+		const ids = rawIds
+			.flatMap((v) => {
+				try {
+					const parsed = JSON.parse(v);
+					return Array.isArray(parsed) ? parsed : [v];
+				} catch {
+					return [v];
+				}
+			})
+			.filter(Boolean);
+
+		if (ids.length === 0) return fail(400, { error: 'Tidak ada pengingat yang dipilih' });
+
+		const count = await bulkDeleteManualReminders(ids, user.id);
+
+		await recordAudit({
+			actorId: user.id,
+			action: 'reminder.bulk_delete',
+			entityType: 'reminder',
+			after: { count, ids },
+			ip: getClientAddress(),
+			userAgent: request.headers.get('user-agent')
+		});
+
+		redirect(303, '/reminders?deleted=1');
+	},
+
+	bulkToggle: async ({ request, locals, url, getClientAddress }) => {
+		const user = requireUser(locals, url);
+		const data = await request.formData();
+		const rawIds = data.getAll('ids').map(String);
+		const ids = rawIds
+			.flatMap((v) => {
+				try {
+					const parsed = JSON.parse(v);
+					return Array.isArray(parsed) ? parsed : [v];
+				} catch {
+					return [v];
+				}
+			})
+			.filter(Boolean);
+		const status = String(data.get('status') ?? 'DONE') as 'PENDING' | 'DONE';
+
+		if (ids.length === 0) return fail(400, { error: 'Tidak ada pengingat yang dipilih' });
+
+		const count = await bulkToggleManualReminders(ids, user.id, status);
+
+		await recordAudit({
+			actorId: user.id,
+			action: 'reminder.bulk_update',
+			entityType: 'reminder',
+			after: { status, count, ids },
+			ip: getClientAddress(),
+			userAgent: request.headers.get('user-agent')
+		});
+
+		redirect(303, '/reminders');
 	}
 };

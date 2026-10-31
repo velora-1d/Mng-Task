@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import { db } from '../db/client';
 import { reports, tasks, users } from '../db/schema';
 import type { SessionUser } from '../auth/session';
@@ -155,4 +155,15 @@ export async function deleteReport(id: string, user: Pick<SessionUser, 'id' | 'r
 		user.role === 'OWNER' ? eq(reports.id, id) : and(eq(reports.id, id), eq(reports.userId, user.id));
 
 	await db.delete(reports).where(where);
+}
+
+export async function bulkDeleteReports(ids: string[], user: Pick<SessionUser, 'id' | 'role'>) {
+	if (ids.length === 0) return 0;
+	const where =
+		user.role === 'OWNER'
+			? inArray(reports.id, ids)
+			: and(inArray(reports.id, ids), eq(reports.userId, user.id));
+
+	await db.delete(reports).where(where);
+	return ids.length;
 }

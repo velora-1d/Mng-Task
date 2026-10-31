@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { requireUser } from '#lib/server/auth/guards';
 import {
+	bulkDeleteReports,
 	createReport,
 	deleteReport,
 	listReports,
@@ -93,6 +94,37 @@ export const actions = {
 			action: 'report.delete',
 			entityType: 'report',
 			entityId: id,
+			ip: getClientAddress(),
+			userAgent: request.headers.get('user-agent')
+		});
+
+		redirect(303, '/reports?deleted=1');
+	},
+
+	bulkDelete: async ({ request, locals, url, getClientAddress }) => {
+		const user = requireUser(locals, url);
+		const data = await request.formData();
+		const rawIds = data.getAll('ids').map(String);
+		const ids = rawIds
+			.flatMap((v) => {
+				try {
+					const parsed = JSON.parse(v);
+					return Array.isArray(parsed) ? parsed : [v];
+				} catch {
+					return [v];
+				}
+			})
+			.filter(Boolean);
+
+		if (ids.length === 0) return fail(400, { error: 'Tidak ada laporan yang dipilih' });
+
+		const count = await bulkDeleteReports(ids, user);
+
+		await recordAudit({
+			actorId: user.id,
+			action: 'report.bulk_delete',
+			entityType: 'report',
+			after: { count, ids },
 			ip: getClientAddress(),
 			userAgent: request.headers.get('user-agent')
 		});

@@ -1,4 +1,4 @@
-import { and, desc, eq, ne, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, ne, sql } from 'drizzle-orm';
 import { db } from '../db/client';
 import { reminders, tasks, users } from '../db/schema';
 import type { SessionUser } from '../auth/session';
@@ -169,6 +169,24 @@ export async function createManualReminder(
 	return id;
 }
 
+export async function updateManualReminder(
+	id: string,
+	userId: string,
+	data: { title: string; note?: string | null; remindAt: string; taskId?: string | null }
+) {
+	const now = new Date().toISOString();
+	await db
+		.update(reminders)
+		.set({
+			title: data.title,
+			note: data.note || null,
+			remindAt: data.remindAt,
+			taskId: data.taskId || null,
+			updatedAt: now
+		})
+		.where(and(eq(reminders.id, id), eq(reminders.userId, userId)));
+}
+
 export async function toggleReminderStatus(id: string, userId: string, status: 'PENDING' | 'DONE') {
 	const now = new Date().toISOString();
 	await db
@@ -179,4 +197,26 @@ export async function toggleReminderStatus(id: string, userId: string, status: '
 
 export async function deleteManualReminder(id: string, userId: string) {
 	await db.delete(reminders).where(and(eq(reminders.id, id), eq(reminders.userId, userId)));
+}
+
+export async function bulkDeleteManualReminders(ids: string[], userId: string): Promise<number> {
+	if (ids.length === 0) return 0;
+	const res = await db
+		.delete(reminders)
+		.where(and(inArray(reminders.id, ids), eq(reminders.userId, userId)));
+	return ids.length;
+}
+
+export async function bulkToggleManualReminders(
+	ids: string[],
+	userId: string,
+	status: 'PENDING' | 'DONE'
+): Promise<number> {
+	if (ids.length === 0) return 0;
+	const now = new Date().toISOString();
+	await db
+		.update(reminders)
+		.set({ status, updatedAt: now })
+		.where(and(inArray(reminders.id, ids), eq(reminders.userId, userId)));
+	return ids.length;
 }

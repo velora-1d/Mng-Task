@@ -160,6 +160,40 @@ export const actions = {
 		redirect(303, '/users');
 	},
 
+	bulkToggleActive: async ({ request, locals, url, getClientAddress }) => {
+		const owner = requireOwner(locals, url);
+		const data = await request.formData();
+		const rawIds = data.getAll('ids').map(String);
+		const ids = rawIds
+			.flatMap((v) => {
+				try {
+					const parsed = JSON.parse(v);
+					return Array.isArray(parsed) ? parsed : [v];
+				} catch {
+					return [v];
+				}
+			})
+			.filter(Boolean);
+		const activate = data.get('active') === 'true';
+
+		let successCount = 0;
+		for (const id of ids) {
+			const res = await toggleUserActive(id, activate);
+			if (res.ok) successCount++;
+		}
+
+		await recordAudit({
+			actorId: owner.id,
+			action: activate ? 'user.bulk_activate' : 'user.bulk_deactivate',
+			entityType: 'user',
+			after: { activate, count: successCount, ids },
+			ip: getClientAddress(),
+			userAgent: request.headers.get('user-agent')
+		});
+
+		return { success: true, count: successCount };
+	},
+
 	resetPassword: async ({ request, locals, url, getClientAddress }) => {
 		const owner = requireOwner(locals, url);
 		const data = await request.formData();

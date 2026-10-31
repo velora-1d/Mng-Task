@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { applyAction, enhance } from '$app/forms';
 	import Avatar from '#lib/components/ui/Avatar.svelte';
 	import Card from '#lib/components/ui/Card.svelte';
 	import Chip from '#lib/components/ui/Chip.svelte';
+	import ConfirmDialog from '#lib/components/ui/ConfirmDialog.svelte';
 	import EmptyState from '#lib/components/ui/EmptyState.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import { activityLabel, PRIORITY_LABEL, priorityTone, STATUS_LABEL, statusTone } from '#lib/types';
@@ -9,6 +11,10 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
+
+	let taskToDelete = $state<any>(null);
+	let deleteConfirmOpen = $state(false);
+	let deleting = $state(false);
 
 	const kpis = $derived([
 		{
@@ -113,38 +119,89 @@
 				description="Semua tugas beres atau belum ada tenggat waktu yang ditentukan."
 			/>
 		{:else}
-			<ul class="divide-y divide-border-base">
-				{#each data.upcoming as task (task.id)}
-					<li class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
-						<div class="min-w-0">
-							<a href={`/tasks/${task.id}`} class="block truncate font-semibold text-ink hover:text-primary">
-								{task.title}
-							</a>
-							<div class="mt-1 flex flex-wrap items-center gap-2">
-								<Chip tone={priorityTone(task.priority)}>{PRIORITY_LABEL[task.priority]}</Chip>
-								<Chip tone={statusTone(task.status)}>{STATUS_LABEL[task.status]}</Chip>
-								{#if task.assigneeName}
-									<span class="flex items-center gap-1 text-xs text-ink-muted">
-										<Avatar name={task.assigneeName} size="sm" />
-										{task.assigneeName}
+			<div class="overflow-x-auto">
+				<table class="data-table">
+					<thead>
+						<tr>
+							<th class="w-10 text-center" scope="col">No</th>
+							<th scope="col">Tugas</th>
+							<th scope="col">Prioritas</th>
+							<th scope="col">Status</th>
+							<th scope="col">PIC</th>
+							<th scope="col">Tenggat</th>
+							<th scope="col" class="text-right"><span class="sr-only">Aksi</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						{#each data.upcoming as task, index (task.id)}
+							<tr>
+								<td class="text-center font-mono text-xs text-ink-muted">{index + 1}</td>
+								<td class="max-w-[260px]">
+									<a href={`/tasks/${task.id}`} class="block truncate font-semibold text-ink hover:text-primary">
+										{task.title}
+									</a>
+								</td>
+								<td>
+									<Chip tone={priorityTone(task.priority)}>{PRIORITY_LABEL[task.priority]}</Chip>
+								</td>
+								<td>
+									<Chip tone={statusTone(task.status)}>{STATUS_LABEL[task.status]}</Chip>
+								</td>
+								<td>
+									{#if task.assigneeName}
+										<span class="flex items-center gap-1.5 text-xs text-ink-secondary">
+											<Avatar name={task.assigneeName} size="sm" />
+											<span class="truncate max-w-[120px]">{task.assigneeName}</span>
+										</span>
+									{:else}
+										<span class="text-xs text-ink-muted">—</span>
+									{/if}
+								</td>
+								<td>
+									<span
+										class="text-xs font-semibold {task.dueDate && task.dueDate < data.today
+											? 'text-danger'
+											: task.dueDate === data.today
+												? 'text-warning'
+												: 'text-ink-secondary'}"
+									>
+										{task.dueDate ? dueLabel(task.dueDate, data.today) : '—'}
 									</span>
-								{/if}
-							</div>
-						</div>
-						<div class="shrink-0 text-right">
-							<span
-								class="text-xs font-semibold {task.dueDate && task.dueDate < data.today
-									? 'text-danger'
-									: task.dueDate === data.today
-										? 'text-warning'
-										: 'text-ink-secondary'}"
-							>
-								{task.dueDate ? dueLabel(task.dueDate, data.today) : '—'}
-							</span>
-						</div>
-					</li>
-				{/each}
-			</ul>
+								</td>
+								<td class="text-right">
+									<div class="flex items-center justify-end gap-1">
+										<a
+											href={`/tasks/${task.id}`}
+											class="grid size-8 place-items-center rounded-md text-ink-muted hover:bg-surface-raised hover:text-primary"
+											title="Lihat detail task"
+										>
+											<Icon name="eye" size={15} />
+										</a>
+										<a
+											href={`/tasks/${task.id}/edit`}
+											class="grid size-8 place-items-center rounded-md text-ink-muted hover:bg-surface-raised hover:text-ink"
+											title="Ubah task"
+										>
+											<Icon name="edit" size={15} />
+										</a>
+										<button
+											type="button"
+											class="grid size-8 place-items-center rounded-md text-ink-muted hover:bg-surface-raised hover:text-danger"
+											title="Hapus task"
+											onclick={() => {
+												taskToDelete = task;
+												deleteConfirmOpen = true;
+											}}
+										>
+											<Icon name="trash" size={15} />
+										</button>
+									</div>
+								</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
 		{/if}
 	</Card>
 </div>
@@ -177,3 +234,37 @@
 		{/if}
 	</Card>
 </div>
+
+<!-- Hidden Form for Dashboard Task Delete -->
+<form
+	id="dashboardDeleteTaskForm"
+	method="POST"
+	action="?/delete"
+	class="hidden"
+	use:enhance={() => {
+		deleting = true;
+		return async ({ result }) => {
+			deleting = false;
+			deleteConfirmOpen = false;
+			taskToDelete = null;
+			await applyAction(result);
+		};
+	}}
+>
+	<input type="hidden" name="id" value={taskToDelete?.id} />
+</form>
+
+<!-- Modal Konfirmasi Hapus Task dari Dashboard (Custom Estetik) -->
+<ConfirmDialog
+	bind:open={deleteConfirmOpen}
+	title="Hapus tugas?"
+	message={`Tugas "${taskToDelete?.title ?? ''}" akan disembunyikan dari daftar pekerjaan.`}
+	confirmLabel="Ya, hapus tugas"
+	cancelLabel="Batal"
+	variant="danger"
+	loading={deleting}
+	onconfirm={() => {
+		const formEl = document.getElementById('dashboardDeleteTaskForm') as HTMLFormElement;
+		formEl?.requestSubmit();
+	}}
+/>
