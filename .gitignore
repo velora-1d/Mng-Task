@@ -22,7 +22,7 @@ backup/
 .neon
 
 # temp
-hello.ts
-neon.ts
+/hello.ts
+/neon.ts
 .beads/
 kanban/
