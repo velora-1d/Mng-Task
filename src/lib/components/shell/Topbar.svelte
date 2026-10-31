@@ -29,7 +29,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border-base bg-[color-mix(in_srgb,var(--canvas)_88%,transparent)] px-4 backdrop-blur-md md:px-6"
+	class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border-base bg-[color-mix(in_srgb,var(--canvas)_88%,transparent)] px-4 backdrop-blur-md sm:px-6 lg:px-8"
 >
 	<button
 		type="button"

@@ -59,9 +59,9 @@
   --priority-urgent: #b91c1c;
   --priority-urgent-soft: #fef2f2;
 
-  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
-  --font-sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "Fira Code", ui-monospace, monospace;
+  --font-display: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, monospace;
 
   --radius-sm: 4px;
   --radius: 8px;
@@ -74,7 +74,7 @@
   --ring: 0 0 0 3px var(--primary-ring);
 
   --sidebar-w: 256px;
-  --container: 1200px;
+  --container: 100%;
 }
 
 /* ---------- Dark ---------- */
@@ -206,9 +206,9 @@ h3 {
   margin: 0;
 }
 
-h1 { font-size: 36px; }
-h2 { font-size: 28px; }
-h3 { font-size: 20px; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.01em; }
+h1 { font-size: 28px; }
+h2 { font-size: 22px; }
+h3 { font-size: 17px; font-family: var(--font-sans); font-weight: 600; letter-spacing: -0.01em; }
 
 p { margin: 0; }
 

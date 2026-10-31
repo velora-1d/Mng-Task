@@ -22,7 +22,7 @@
 	<div class="flex min-w-0 flex-col">
 		<Topbar {user} {reminderCount} onmenu={() => (menuOpen = true)} />
 
-		<main class="mx-auto w-full max-w-[var(--container)] flex-1 px-4 py-6 md:px-6 md:py-7">
+		<main class="w-full flex-1 px-4 py-5 sm:px-6 lg:px-8">
 			{@render children()}
 		</main>
 	</div>
