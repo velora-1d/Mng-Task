@@ -24,7 +24,10 @@ export const actions = {
 			description: String(data.get('description') ?? ''),
 			status: String(data.get('status') ?? 'TODO'),
 			priority: String(data.get('priority') ?? 'MEDIUM'),
+			startDate: String(data.get('startDate') ?? ''),
+			startTime: String(data.get('startTime') ?? ''),
 			dueDate: String(data.get('dueDate') ?? ''),
+			dueTime: String(data.get('dueTime') ?? ''),
 			assigneeId: String(data.get('assigneeId') ?? '')
 		};
 
@@ -54,7 +57,10 @@ export const actions = {
 				title: parsed.data.title,
 				status: parsed.data.status,
 				priority: parsed.data.priority,
+				startDate: parsed.data.startDate,
+				startTime: parsed.data.startTime,
 				dueDate: parsed.data.dueDate,
+				dueTime: parsed.data.dueTime,
 				assigneeId: parsed.data.assigneeId
 			},
 			ip: getClientAddress(),

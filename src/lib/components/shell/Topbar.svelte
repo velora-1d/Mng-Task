@@ -6,6 +6,7 @@
 	type Props = {
 		user: { name: string };
 		reminderCount?: number;
+		switchableUsers?: { id: string; name: string; email: string }[];
 		onmenu: () => void;
 	};
 

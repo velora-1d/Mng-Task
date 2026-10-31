@@ -88,7 +88,10 @@ export type TaskListItem = {
 	description: string | null;
 	status: TaskStatus;
 	priority: TaskPriority;
+	startDate: string | null;
+	startTime: string | null;
 	dueDate: string | null;
+	dueTime: string | null;
 	assigneeId: string | null;
 	assigneeName: string | null;
 	createdBy: string;
@@ -124,7 +127,10 @@ export async function listTasks(
 			description: tasks.description,
 			status: tasks.status,
 			priority: tasks.priority,
+			startDate: tasks.startDate,
+			startTime: tasks.startTime,
 			dueDate: tasks.dueDate,
+			dueTime: tasks.dueTime,
 			assigneeId: tasks.assigneeId,
 			assigneeName: users.name,
 			createdBy: tasks.createdBy,
@@ -159,7 +165,10 @@ export async function getTaskForUser(
 			description: tasks.description,
 			status: tasks.status,
 			priority: tasks.priority,
+			startDate: tasks.startDate,
+			startTime: tasks.startTime,
 			dueDate: tasks.dueDate,
+			dueTime: tasks.dueTime,
 			assigneeId: tasks.assigneeId,
 			assigneeName: users.name,
 			assigneeEmail: users.email,
@@ -235,7 +244,10 @@ export async function listTasksForExport(
 			description: tasks.description,
 			status: tasks.status,
 			priority: tasks.priority,
+			startDate: tasks.startDate,
+			startTime: tasks.startTime,
 			dueDate: tasks.dueDate,
+			dueTime: tasks.dueTime,
 			assigneeId: tasks.assigneeId,
 			assigneeName: users.name,
 			createdBy: tasks.createdBy,
@@ -258,7 +270,10 @@ export async function createTaskForUser(
 		description: string | null;
 		status: TaskStatus;
 		priority: TaskPriority;
+		startDate: string | null;
+		startTime: string | null;
 		dueDate: string | null;
+		dueTime: string | null;
 		assigneeId: string | null;
 	},
 	user: Pick<SessionUser, 'id' | 'role'>
@@ -283,7 +298,10 @@ export async function createTaskForUser(
 		description: input.description,
 		status: input.status,
 		priority: input.priority,
+		startDate: input.startDate,
+		startTime: input.startTime,
 		dueDate: input.dueDate,
+		dueTime: input.dueTime,
 		assigneeId,
 		createdBy: user.id,
 		completedAt: input.status === 'DONE' ? now : null,
@@ -301,7 +319,10 @@ export async function updateTaskForUser(
 		description: string | null;
 		status: TaskStatus;
 		priority: TaskPriority;
+		startDate: string | null;
+		startTime: string | null;
 		dueDate: string | null;
+		dueTime: string | null;
 		assigneeId: string | null;
 	},
 	user: Pick<SessionUser, 'id' | 'role'>
@@ -347,7 +368,10 @@ export async function updateTaskForUser(
 			description: input.description,
 			status: input.status,
 			priority: input.priority,
+			startDate: input.startDate,
+			startTime: input.startTime,
 			dueDate: input.dueDate,
+			dueTime: input.dueTime,
 			assigneeId,
 			completedAt,
 			updatedAt: now
@@ -448,7 +472,10 @@ export async function dashboardCounts(user: Pick<SessionUser, 'id' | 'role'>) {
 export type UpcomingTask = {
 	id: string;
 	title: string;
+	startDate: string | null;
+	startTime: string | null;
 	dueDate: string | null;
+	dueTime: string | null;
 	priority: TaskPriority;
 	status: TaskStatus;
 	assigneeName: string | null;
@@ -461,7 +488,10 @@ export async function upcomingTasks(user: Pick<SessionUser, 'id' | 'role'>): Pro
 		.select({
 			id: tasks.id,
 			title: tasks.title,
+			startDate: tasks.startDate,
+			startTime: tasks.startTime,
 			dueDate: tasks.dueDate,
+			dueTime: tasks.dueTime,
 			priority: tasks.priority,
 			status: tasks.status,
 			assigneeName: users.name

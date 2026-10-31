@@ -25,24 +25,52 @@ const dateField = z
 	.trim()
 	.regex(/^\d{4}-\d{2}-\d{2}$/, 'Format tanggal tidak valid.')
 	.optional()
+	.or(z.literal(''))
 	.transform((value) => (value ? value : null));
 
-export const taskInputSchema = z.object({
-	title: z
-		.string()
-		.trim()
-		.min(3, 'Judul harus 3–200 karakter.')
-		.max(200, 'Judul harus 3–200 karakter.'),
-	description: optionalText(5000, 'Deskripsi maksimal 5.000 karakter.'),
-	status: z.enum(TASK_STATUSES, { message: 'Status tidak valid.' }),
-	priority: z.enum(TASK_PRIORITIES, { message: 'Prioritas tidak valid.' }),
-	dueDate: dateField,
-	assigneeId: z
-		.string()
-		.trim()
-		.optional()
-		.transform((value) => (value ? value : null))
-});
+const timeField = z
+	.string()
+	.trim()
+	.regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Format jam tidak valid (HH:mm).')
+	.optional()
+	.or(z.literal(''))
+	.transform((value) => (value ? value : null));
+
+export const taskInputSchema = z
+	.object({
+		title: z
+			.string()
+			.trim()
+			.min(3, 'Judul harus 3–200 karakter.')
+			.max(200, 'Judul harus 3–200 karakter.'),
+		description: optionalText(5000, 'Deskripsi maksimal 5.000 karakter.'),
+		status: z.enum(TASK_STATUSES, { message: 'Status tidak valid.' }),
+		priority: z.enum(TASK_PRIORITIES, { message: 'Prioritas tidak valid.' }),
+		startDate: dateField,
+		startTime: timeField,
+		dueDate: dateField,
+		dueTime: timeField,
+		assigneeId: z
+			.string()
+			.trim()
+			.optional()
+			.transform((value) => (value ? value : null))
+	})
+	.refine(
+		(data) => {
+			if (data.startDate && data.dueDate) {
+				if (data.dueDate < data.startDate) return false;
+				if (data.dueDate === data.startDate && data.startTime && data.dueTime) {
+					return data.dueTime >= data.startTime;
+				}
+			}
+			return true;
+		},
+		{
+			message: 'Tenggat akhir tidak boleh mendahului waktu awal tugas.',
+			path: ['dueDate']
+		}
+	);
 
 export type TaskInput = z.infer<typeof taskInputSchema>;
 

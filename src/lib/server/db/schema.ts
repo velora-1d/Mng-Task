@@ -66,8 +66,14 @@ export const tasks = pgTable(
 		description: text('description'),
 		status: text('status').$type<TaskStatus>().notNull().default('TODO'),
 		priority: text('priority').$type<TaskPriority>().notNull().default('MEDIUM'),
+		/** Tanggal awal tugas 'YYYY-MM-DD' (WIB). */
+		startDate: text('start_date'),
+		/** Jam mulai tugas 'HH:mm' (WIB). */
+		startTime: text('start_time'),
 		/** Tanggal tenggat 'YYYY-MM-DD' (WIB). */
 		dueDate: text('due_date'),
+		/** Jam tenggat tugas 'HH:mm' (WIB). */
+		dueTime: text('due_time'),
 		assigneeId: text('assignee_id').references(() => users.id, { onDelete: 'set null' }),
 		createdBy: text('created_by')
 			.notNull()

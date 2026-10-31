@@ -8,7 +8,7 @@
 	import Icon from '#lib/components/ui/Icon.svelte';
 	import QuickStatus from '#lib/components/tasks/QuickStatus.svelte';
 	import { PRIORITY_LABEL, STATUS_LABEL, activityLabel, priorityTone, statusTone } from '#lib/types';
-	import { dueLabel, formatDateLong, formatDateTime, todayWib } from '#lib/utils/date';
+	import { dueLabel, formatDateLong, formatDateShort, formatDateTime, todayWib } from '#lib/utils/date';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
@@ -79,19 +79,27 @@
 		<div class="mb-2 flex flex-wrap items-center gap-2">
 			<Chip tone={statusTone(task.status)}>{STATUS_LABEL[task.status]}</Chip>
 			<Chip tone={priorityTone(task.priority)}>{PRIORITY_LABEL[task.priority]}</Chip>
-			{#if task.dueDate}
-				<span
-					class="text-xs font-medium {task.status !== 'DONE' && task.dueDate < today
-						? 'text-danger'
-						: task.dueDate === today
-							? 'text-warning'
-							: 'text-ink-muted'}"
-				>
-					{task.dueDate < today && task.status !== 'DONE' ? 'Terlambat · ' : ''}{dueLabel(
-						task.dueDate,
-						today
-					)}
-				</span>
+			{#if task.startDate || task.dueDate}
+				<div class="flex items-center gap-1.5 text-xs text-ink-muted">
+					<Icon name="calendar" size={13} class="text-primary" />
+					{#if task.startDate}
+						<span>Mulai: {formatDateShort(task.startDate)}{task.startTime ? ` (${task.startTime})` : ''}</span>
+					{/if}
+					{#if task.startDate && task.dueDate}
+						<span class="text-border-strong/40">→</span>
+					{/if}
+					{#if task.dueDate}
+						<span
+							class={task.status !== 'DONE' && task.dueDate < today
+								? 'text-danger font-semibold'
+								: task.dueDate === today
+									? 'text-warning font-semibold'
+									: 'text-ink-secondary'}
+						>
+							Tenggat: {dueLabel(task.dueDate, today)}{task.dueTime ? ` (${task.dueTime})` : ''}
+						</span>
+					{/if}
+				</div>
 			{/if}
 		</div>
 		<h1 class="page-title break-words">{task.title}</h1>
@@ -176,9 +184,23 @@
 					<dd><Chip tone={priorityTone(task.priority)}>{PRIORITY_LABEL[task.priority]}</Chip></dd>
 				</div>
 				<div class="flex items-start justify-between gap-3">
-					<dt class="text-ink-muted">Deadline</dt>
+					<dt class="text-ink-muted">Mulai</dt>
 					<dd class="text-right text-ink">
-						{task.dueDate ? formatDateLong(task.dueDate) : 'Tanpa deadline'}
+						{#if task.startDate}
+							{formatDateLong(task.startDate)}{task.startTime ? ` pukul ${task.startTime} WIB` : ''}
+						{:else}
+							<span class="text-ink-muted">—</span>
+						{/if}
+					</dd>
+				</div>
+				<div class="flex items-start justify-between gap-3">
+					<dt class="text-ink-muted">Tenggat</dt>
+					<dd class="text-right text-ink">
+						{#if task.dueDate}
+							{formatDateLong(task.dueDate)}{task.dueTime ? ` pukul ${task.dueTime} WIB` : ''}
+						{:else}
+							<span class="text-ink-muted">Tanpa deadline</span>
+						{/if}
 					</dd>
 				</div>
 				<div class="flex items-start justify-between gap-3">

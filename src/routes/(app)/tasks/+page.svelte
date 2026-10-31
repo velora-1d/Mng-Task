@@ -304,7 +304,23 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 							<td><QuickStatus id={task.id} status={task.status} next={currentPath} /></td>
 							<td><Chip tone={priorityTone(task.priority)}>{PRIORITY_LABEL[task.priority]}</Chip></td>
 							<td class={dueClass(task.dueDate, task.status)}>
-								{task.dueDate ? dueLabel(task.dueDate, today) : '—'}
+								{#if task.dueDate}
+									<div class="flex flex-col">
+										<span>{dueLabel(task.dueDate, today)}</span>
+										{#if task.dueTime}
+											<span class="text-[11px] font-normal text-ink-muted">{task.dueTime} WIB</span>
+										{/if}
+									</div>
+								{:else if task.startDate}
+									<div class="flex flex-col text-ink-muted">
+										<span class="text-xs">Mulai: {task.startDate}</span>
+										{#if task.startTime}
+											<span class="text-[11px]">{task.startTime} WIB</span>
+										{/if}
+									</div>
+								{:else}
+									—
+								{/if}
 							</td>
 							<td>
 								{#if task.assigneeName}
@@ -406,7 +422,13 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 							<QuickStatus id={task.id} status={task.status} next={currentPath} />
 							<Chip tone={priorityTone(task.priority)}>{PRIORITY_LABEL[task.priority]}</Chip>
 							<span class={['text-xs', dueClass(task.dueDate, task.status)].join(' ')}>
-								{task.dueDate ? dueLabel(task.dueDate, today) : 'Tanpa deadline'}
+								{#if task.dueDate}
+									{dueLabel(task.dueDate, today)}{task.dueTime ? ` · ${task.dueTime}` : ''}
+								{:else if task.startDate}
+									Mulai {task.startDate}{task.startTime ? ` · ${task.startTime}` : ''}
+								{:else}
+									Tanpa deadline
+								{/if}
 							</span>
 						</div>
 						{#if task.assigneeName}

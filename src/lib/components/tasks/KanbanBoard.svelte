@@ -17,7 +17,10 @@
 		description: string | null;
 		status: (typeof TASK_STATUSES)[number];
 		priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+		startDate?: string | null;
+		startTime?: string | null;
 		dueDate: string | null;
+		dueTime?: string | null;
 		assigneeName: string | null;
 	};
 
@@ -116,7 +119,11 @@
 								<div class="flex items-center gap-2">
 									{#if task.dueDate}
 										<span class={['text-[11px]', dueClass(task.dueDate, task.status)].join(' ')}>
-											{dueLabel(task.dueDate, today)}
+											{dueLabel(task.dueDate, today)}{task.dueTime ? ` (${task.dueTime})` : ''}
+										</span>
+									{:else if task.startDate}
+										<span class="text-[11px] text-ink-muted">
+											{task.startDate}{task.startTime ? ` (${task.startTime})` : ''}
 										</span>
 									{/if}
 									{#if task.assigneeName}

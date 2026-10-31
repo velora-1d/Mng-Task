@@ -11,7 +11,10 @@
 		description: string;
 		status: string;
 		priority: string;
+		startDate?: string;
+		startTime?: string;
 		dueDate: string;
+		dueTime?: string;
 		assigneeId: string;
 	};
 
@@ -45,7 +48,10 @@
 	let description = $state('');
 	let status = $state<string>('TODO');
 	let priority = $state<string>('MEDIUM');
+	let startDate = $state('');
+	let startTime = $state('');
 	let dueDate = $state('');
+	let dueTime = $state('');
 	let assigneeId = $state('');
 	let submitting = $state(false);
 	let localErrors = $state<Record<string, string>>({});
@@ -55,7 +61,10 @@
 		description = values.description;
 		status = values.status;
 		priority = values.priority;
-		dueDate = values.dueDate;
+		startDate = values.startDate ?? '';
+		startTime = values.startTime ?? '';
+		dueDate = values.dueDate ?? '';
+		dueTime = values.dueTime ?? '';
 		assigneeId = values.assigneeId;
 	});
 
@@ -65,6 +74,14 @@
 		localErrors = {};
 		if (title.trim().length < 3) {
 			localErrors = { title: 'Judul harus 3–200 karakter.' };
+			return;
+		}
+		if (startDate && dueDate && dueDate < startDate) {
+			localErrors = { dueDate: 'Tanggal tenggat tidak boleh lebih awal dari tanggal mulai.' };
+			return;
+		}
+		if (startDate && dueDate && startDate === dueDate && startTime && dueTime && dueTime < startTime) {
+			localErrors = { dueTime: 'Jam tenggat tidak boleh lebih awal dari jam mulai.' };
 			return;
 		}
 		submitting = true;
@@ -135,15 +152,46 @@
 				error={shownErrors.priority}
 			/>
 
-			<Input
-				label="Deadline"
-				name="dueDate"
-				type="date"
-				bind:value={dueDate}
-				min={minDueDate}
-				error={shownErrors.dueDate}
-				hint="Kosongkan kalau belum ada tenggat."
-			/>
+			<!-- Waktu Awal Tugas -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+				<Input
+					label="Tanggal Mulai"
+					name="startDate"
+					type="date"
+					bind:value={startDate}
+					error={shownErrors.startDate}
+					hint="Kalender awal"
+				/>
+				<Input
+					label="Jam Mulai"
+					name="startTime"
+					type="time"
+					bind:value={startTime}
+					error={shownErrors.startTime}
+					hint="Waktu jam mulai"
+				/>
+			</div>
+
+			<!-- Waktu Tenggat / Akhir Tugas -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+				<Input
+					label="Tanggal Tenggat"
+					name="dueDate"
+					type="date"
+					bind:value={dueDate}
+					min={startDate || minDueDate}
+					error={shownErrors.dueDate}
+					hint="Kalender akhir"
+				/>
+				<Input
+					label="Jam Tenggat"
+					name="dueTime"
+					type="time"
+					bind:value={dueTime}
+					error={shownErrors.dueTime}
+					hint="Batas waktu jam"
+				/>
+			</div>
 		</div>
 
 		<div class="surface-card stack p-4 md:p-5">

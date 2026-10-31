@@ -12,7 +12,10 @@
 		description: task.description ?? '',
 		status: task.status,
 		priority: task.priority,
+		startDate: task.startDate ?? '',
+		startTime: task.startTime ?? '',
 		dueDate: task.dueDate ?? '',
+		dueTime: task.dueTime ?? '',
 		assigneeId: task.assigneeId ?? ''
 	});
 

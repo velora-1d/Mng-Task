@@ -10,6 +10,7 @@
 		orgName?: string;
 		reminderCount?: number;
 		open?: boolean;
+		impersonating?: boolean;
 	};
 
 	let {

@@ -10,7 +10,10 @@
 		description: '',
 		status: 'TODO' as const,
 		priority: 'MEDIUM' as const,
+		startDate: '',
+		startTime: '',
 		dueDate: '',
+		dueTime: '',
 		assigneeId: ''
 	};
 

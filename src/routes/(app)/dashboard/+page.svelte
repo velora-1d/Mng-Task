@@ -165,6 +165,9 @@
 												: 'text-ink-secondary'}"
 									>
 										{task.dueDate ? dueLabel(task.dueDate, data.today) : '—'}
+										{#if task.dueTime}
+											<span class="block text-[11px] font-normal text-ink-muted">{task.dueTime} WIB</span>
+										{/if}
 									</span>
 								</td>
 								<td class="text-right">

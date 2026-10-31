@@ -29,14 +29,30 @@ export const GET = async ({ locals, url }) => {
 
 	const items = await listTasksForExport(user, filters);
 
-	const headers = ['ID', 'Judul', 'Deskripsi', 'Status', 'Prioritas', 'Deadline', 'Penanggung Jawab', 'Dibuat', 'Selesai'];
+	const headers = [
+		'ID',
+		'Judul',
+		'Deskripsi',
+		'Status',
+		'Prioritas',
+		'Tanggal Mulai',
+		'Jam Mulai',
+		'Tanggal Tenggat',
+		'Jam Tenggat',
+		'Penanggung Jawab',
+		'Dibuat',
+		'Selesai'
+	];
 	const rows = items.map((t) => [
 		escapeCsv(t.id),
 		escapeCsv(t.title),
 		escapeCsv(t.description),
 		escapeCsv(STATUS_LABEL[t.status] ?? t.status),
 		escapeCsv(PRIORITY_LABEL[t.priority] ?? t.priority),
+		escapeCsv(t.startDate ?? '-'),
+		escapeCsv(t.startTime ?? '-'),
 		escapeCsv(t.dueDate ?? '-'),
+		escapeCsv(t.dueTime ?? '-'),
 		escapeCsv(t.assigneeName ?? 'Belum ditugaskan'),
 		escapeCsv(t.createdAt.slice(0, 10)),
 		escapeCsv(t.completedAt ? t.completedAt.slice(0, 10) : '-')
