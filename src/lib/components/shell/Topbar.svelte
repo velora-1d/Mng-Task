@@ -7,10 +7,19 @@
 		user: { name: string };
 		reminderCount?: number;
 		switchableUsers?: { id: string; name: string; email: string }[];
+		sidebarCollapsed?: boolean;
+		onToggleSidebar?: () => void;
 		onmenu?: () => void;
 	};
 
-	let { user, reminderCount = 0, switchableUsers = [], onmenu }: Props = $props();
+	let {
+		user,
+		reminderCount = 0,
+		switchableUsers = [],
+		sidebarCollapsed = false,
+		onToggleSidebar,
+		onmenu
+	}: Props = $props();
 	let switchOpen = $state(false);
 	let switchingId = $state<string | null>(null);
 
@@ -83,6 +92,19 @@
 		<span class="grid size-8 place-items-center rounded-lg bg-primary text-sm font-bold text-white shadow-xs">M</span>
 		<span class="hidden sm:inline font-[family-name:var(--font-display)] font-bold text-ink whitespace-nowrap">Mng-Task</span>
 	</a>
+
+	<!-- Toggle Sidebar Collapse (Desktop) -->
+	{#if onToggleSidebar}
+		<button
+			type="button"
+			class="hidden lg:grid size-9 place-items-center rounded-lg border border-border-base bg-surface text-ink-secondary hover:bg-surface-raised hover:text-ink transition active:scale-95 shrink-0"
+			onclick={onToggleSidebar}
+			title={sidebarCollapsed ? 'Bentangkan sidebar' : 'Ciutkan sidebar'}
+			aria-label={sidebarCollapsed ? 'Bentangkan sidebar' : 'Ciutkan sidebar'}
+		>
+			<Icon name={sidebarCollapsed ? 'chevronRight' : 'chevronLeft'} size={16} />
+		</button>
+	{/if}
 
 	<form action="/tasks" method="get" class="hidden w-full max-w-[280px] sm:block xl:max-w-[320px]" role="search">
 		<label class="flex h-9 items-center gap-2 rounded-lg border border-border-base bg-surface px-3 text-ink-muted">
