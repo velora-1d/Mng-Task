@@ -212,11 +212,11 @@ h3 { font-size: 17px; font-family: var(--font-sans); font-weight: 600; letter-sp
 
 p { margin: 0; }
 
-a {
+a:where(:not([class])) {
   color: var(--primary);
   text-decoration: none;
 }
-a:hover { color: var(--primary-hover); }
+a:where(:not([class])):hover { color: var(--primary-hover); }
 
 :focus-visible {
   outline: 2px solid var(--primary);

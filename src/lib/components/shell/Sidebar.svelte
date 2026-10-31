@@ -126,13 +126,13 @@
 					class={[
 						'relative grid size-10 place-items-center rounded-xl transition active:scale-95',
 						active
-							? 'bg-primary text-white shadow-xs font-bold'
+							? 'bg-primary !text-white shadow-xs font-bold'
 							: '!text-ink-secondary hover:!text-ink hover:bg-surface-raised'
 					].join(' ')}
 					aria-current={active ? 'page' : undefined}
 					title={item.label}
 				>
-					<Icon name={item.icon} size={19} />
+					<Icon name={item.icon} size={20} class={active ? '!text-white stroke-[2.2]' : '!text-ink-secondary'} />
 					{#if item.badge && item.badge > 0}
 						<span
 							class="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-[#451a03] shadow-xs"
@@ -156,11 +156,11 @@
 						class={[
 							'grid size-7 place-items-center rounded-lg transition-all shrink-0',
 							active
-								? 'bg-primary text-white shadow-xs font-bold'
+								? 'bg-primary !text-white shadow-xs font-bold'
 								: 'text-ink-muted group-hover:text-ink group-hover:bg-surface-raised'
 						].join(' ')}
 					>
-						<Icon name={item.icon} size={16} />
+						<Icon name={item.icon} size={16} class={active ? '!text-white stroke-[2.2]' : '!text-ink-secondary'} />
 					</div>
 					<span class="truncate">{item.label}</span>
 					{#if item.badge && item.badge > 0}
@@ -192,13 +192,13 @@
 					class={[
 						'relative grid size-10 place-items-center rounded-xl transition active:scale-95',
 						active
-							? 'bg-primary text-white shadow-xs font-bold'
+							? 'bg-primary !text-white shadow-xs font-bold'
 							: '!text-ink-secondary hover:!text-ink hover:bg-surface-raised'
 					].join(' ')}
 					aria-current={active ? 'page' : undefined}
 					title={item.label}
 				>
-					<Icon name={item.icon} size={19} />
+					<Icon name={item.icon} size={20} class={active ? '!text-white stroke-[2.2]' : '!text-ink-secondary'} />
 				</a>
 			{:else}
 				<a
@@ -215,11 +215,11 @@
 						class={[
 							'grid size-7 place-items-center rounded-lg transition-all shrink-0',
 							active
-								? 'bg-primary text-white shadow-xs font-bold'
+								? 'bg-primary !text-white shadow-xs font-bold'
 								: 'text-ink-muted group-hover:text-ink group-hover:bg-surface-raised'
 						].join(' ')}
 					>
-						<Icon name={item.icon} size={16} />
+						<Icon name={item.icon} size={16} class={active ? '!text-white stroke-[2.2]' : '!text-ink-secondary'} />
 					</div>
 					<span class="truncate">{item.label}</span>
 					{#if active}
