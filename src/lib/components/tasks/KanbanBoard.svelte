@@ -69,7 +69,7 @@
 
 			<div class="flex flex-1 flex-col gap-2.5 overflow-y-auto min-h-[120px]">
 				{#if colTasks.length === 0}
-					<div class="grid flex-1 place-items-center rounded-lg border border-dashed border-border-base p-4 text-center text-xs text-ink-muted">
+					<div class="grid flex-1 place-items-center rounded-lg border border-border-base/40 bg-surface/40 p-4 text-center text-xs text-ink-muted">
 						Tidak ada tugas
 					</div>
 				{:else}

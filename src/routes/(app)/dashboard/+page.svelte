@@ -56,7 +56,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">{data.todayLabel}</p>
 		<h1 class="page-title">Dashboard</h1>
 		<p class="page-sub">Halo {data.firstName}. Ini ringkasan tugas dan progres tim kamu.</p>
 	</div>

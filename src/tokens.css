@@ -312,7 +312,7 @@ a:hover { color: var(--primary-hover); }
 .prio-high { color: var(--priority-high); background: var(--priority-high-soft); }
 .prio-urgent { color: var(--priority-urgent); background: var(--priority-urgent-soft); }
 
-.divider { height: 1px; background: var(--border); border: 0; margin: 0; }
+.divider { height: 1px; background: color-mix(in srgb, var(--border) 50%, transparent); border: 0; margin: 0; }
 
 .muted { color: var(--text-muted); }
 .secondary { color: var(--text-secondary); }

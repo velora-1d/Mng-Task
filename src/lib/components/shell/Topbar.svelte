@@ -34,9 +34,34 @@
 	}
 
 	let theme = $state<'light' | 'dark'>('light');
+	let currentDate = $state('');
+	let currentTime = $state('');
+
+	function updateClock() {
+		const now = new Date();
+		const dateOptions: Intl.DateTimeFormatOptions = {
+			timeZone: 'Asia/Jakarta',
+			weekday: 'short',
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric'
+		};
+		const timeOptions: Intl.DateTimeFormatOptions = {
+			timeZone: 'Asia/Jakarta',
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit',
+			hour12: false
+		};
+		currentDate = new Intl.DateTimeFormat('id-ID', dateOptions).format(now);
+		currentTime = new Intl.DateTimeFormat('id-ID', timeOptions).format(now);
+	}
 
 	onMount(() => {
 		theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+		updateClock();
+		const timer = setInterval(updateClock, 1000);
+		return () => clearInterval(timer);
 	});
 
 	function toggleTheme() {
@@ -67,7 +92,7 @@
 		<span class="font-[family-name:var(--font-display)] font-bold text-ink">Mng-Task</span>
 	</a>
 
-	<form action="/tasks" method="get" class="hidden w-full max-w-[360px] sm:block" role="search">
+	<form action="/tasks" method="get" class="hidden w-full max-w-[280px] sm:block xl:max-w-[320px]" role="search">
 		<label class="flex h-9 items-center gap-2 rounded-lg border border-border-base bg-surface px-3 text-ink-muted">
 			<Icon name="search" size={16} />
 			<input
@@ -79,6 +104,20 @@
 			/>
 		</label>
 	</form>
+
+	<!-- Live Jam & Tanggal (WIB) -->
+	<div
+		class="flex items-center gap-2 rounded-lg border border-border-base/70 bg-surface/70 px-2.5 py-1.5 text-xs text-ink-secondary shadow-2xs backdrop-blur-xs"
+		title="Waktu Indonesia Barat (WIB)"
+	>
+		<Icon name="clock" size={14} class="text-primary shrink-0" />
+		<div class="flex items-center gap-1.5">
+			<span class="hidden md:inline font-medium text-ink-secondary">{currentDate}</span>
+			<span class="hidden md:inline text-border-strong/40">·</span>
+			<span class="tabular-nums font-semibold text-ink">{currentTime || '00:00:00'}</span>
+			<span class="text-[10px] font-bold text-primary uppercase">WIB</span>
+		</div>
+	</div>
 
 	<div class="ml-auto flex items-center gap-2">
 		{#if switchableUsers.length > 0}

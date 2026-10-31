@@ -119,7 +119,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">Akses & Tim</p>
 		<h1 class="page-title">Pengguna</h1>
 		<p class="page-sub">Kelola akun anggota tim dan hak akses mereka.</p>
 	</div>

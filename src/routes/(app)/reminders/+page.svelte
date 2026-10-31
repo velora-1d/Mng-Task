@@ -120,7 +120,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">Notifikasi & Tenggat</p>
 		<h1 class="page-title">Pengingat</h1>
 		<p class="page-sub">Pantau deadline otomatis tugas dan atur catatan pengingat harianmu.</p>
 	</div>

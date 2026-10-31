@@ -93,7 +93,6 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 
 <div class="page-head">
 	<div>
-		<p class="overline">Manajemen tugas</p>
 		<h1 class="page-title">Tugas</h1>
 		<p class="page-sub">
 			{data.total} task{data.isOwner ? '' : ' milikmu'} · {data.items.length} ditampilkan

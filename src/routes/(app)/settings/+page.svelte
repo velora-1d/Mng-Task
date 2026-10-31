@@ -32,7 +32,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">Preferensi & Akun</p>
 		<h1 class="page-title">Pengaturan</h1>
 		<p class="page-sub">Kelola profil pribadimu, keamanan akun, dan preferensi aplikasi.</p>
 	</div>
@@ -62,7 +61,7 @@
 			</div>
 
 			<!-- Form Ubah Nama -->
-			<form method="POST" action="?/updateName" use:enhance class="stack mb-6 border-b border-border-base pb-6">
+			<form method="POST" action="?/updateName" use:enhance class="stack mb-6 border-b border-border-base/30 pb-6">
 				{#if form?.form === 'name' && form?.error}
 					<p class="text-xs text-danger">{form.error}</p>
 				{/if}

@@ -30,7 +30,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">Task baru</p>
 		<h1 class="page-title">Buat task</h1>
 		<p class="page-sub">Isi detail pekerjaan, lalu tentukan siapa yang mengerjakan.</p>
 	</div>

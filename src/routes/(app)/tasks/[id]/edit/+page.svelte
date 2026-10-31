@@ -34,7 +34,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">Edit data</p>
 		<h1 class="page-title">Ubah task</h1>
 		<p class="page-sub">Perbarui status, prioritas, tenggat, atau penanggung jawab.</p>
 	</div>

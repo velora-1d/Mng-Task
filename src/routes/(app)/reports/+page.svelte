@@ -96,7 +96,6 @@
 
 <div class="page-head">
 	<div>
-		<p class="overline">Rekapitulasi & Kinerja</p>
 		<h1 class="page-title">Laporan</h1>
 		<p class="page-sub">Generate snapshot laporan progres tim dan unduh riwayatnya.</p>
 	</div>
