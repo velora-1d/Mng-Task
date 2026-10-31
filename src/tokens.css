@@ -283,6 +283,12 @@ a:hover { color: var(--primary-hover); }
   font-family: var(--font-sans);
   font-size: 14px;
 }
+textarea.input {
+  height: auto;
+  min-height: 180px;
+  padding: 10px 12px;
+  line-height: 1.6;
+}
 .input::placeholder { color: var(--text-muted); }
 .input:focus {
   outline: none;

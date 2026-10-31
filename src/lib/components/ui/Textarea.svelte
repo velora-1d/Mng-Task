@@ -34,7 +34,7 @@
 		id={areaId}
 		{rows}
 		bind:value
-		class={['input h-auto py-2 leading-relaxed', error ? 'border-danger' : '', cls].join(' ')}
+		class={['input !h-auto min-h-[160px] py-3 leading-relaxed resize-y', error ? 'border-danger' : '', cls].join(' ')}
 		aria-invalid={error ? 'true' : undefined}
 		aria-describedby={error ? errorId : hint ? `${areaId}-hint` : undefined}
 		{...rest}

@@ -136,8 +136,8 @@ import KanbanBoard from '#lib/components/tasks/KanbanBoard.svelte';
 	class="mb-4 rounded-xl border border-border-base bg-surface p-3"
 	aria-label="Filter tugas"
 >
-	<div class="grid gap-2 md:grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))]">
-		<label class="flex h-10 items-center gap-2 rounded-lg border border-border-base bg-canvas px-3">
+	<div class="grid grid-cols-2 gap-2 md:grid-cols-[minmax(0,2fr)_repeat(4,minmax(0,1fr))]">
+		<label class="col-span-2 md:col-span-1 flex h-10 items-center gap-2 rounded-lg border border-border-base bg-canvas px-3">
 			<Icon name="search" size={16} class="text-ink-muted" />
 			<span class="sr-only">Cari tugas</span>
 			<input

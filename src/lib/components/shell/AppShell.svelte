@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import Sidebar from './Sidebar.svelte';
 	import Topbar from './Topbar.svelte';
+	import Bottombar from './Bottombar.svelte';
 	import ImpersonateBanner from './ImpersonateBanner.svelte';
 	import type { UserRole } from '#lib/types';
 
@@ -31,8 +32,10 @@
 	<div class="flex min-w-0 flex-col">
 		<Topbar {user} {reminderCount} {switchableUsers} onmenu={() => (menuOpen = true)} />
 
-		<main class="w-full flex-1 px-4 py-5 sm:px-6 lg:px-8">
+		<main class="w-full flex-1 px-4 py-5 pb-24 sm:px-6 lg:px-8 lg:pb-8">
 			{@render children()}
 		</main>
+
+		<Bottombar {user} {reminderCount} onmenu={() => (menuOpen = true)} />
 	</div>
 </div>

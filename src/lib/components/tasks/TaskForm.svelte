@@ -125,7 +125,8 @@
 		<Textarea
 			label="Deskripsi"
 			name="description"
-			rows={8}
+			rows={10}
+			class="min-h-[220px]"
 			maxlength={5000}
 			bind:value={description}
 			error={shownErrors.description}
@@ -136,24 +137,27 @@
 
 	<div class="stack">
 		<div class="surface-card stack p-4 md:p-5">
-			<Select
-				label="Status"
-				name="status"
-				options={statusSelect}
-				bind:value={status}
-				error={shownErrors.status}
-			/>
+			<!-- Status & Prioritas (Wajib Grid 2 di mobile) -->
+			<div class="grid grid-cols-2 gap-2.5">
+				<Select
+					label="Status"
+					name="status"
+					options={statusSelect}
+					bind:value={status}
+					error={shownErrors.status}
+				/>
 
-			<Select
-				label="Prioritas"
-				name="priority"
-				options={prioritySelect}
-				bind:value={priority}
-				error={shownErrors.priority}
-			/>
+				<Select
+					label="Prioritas"
+					name="priority"
+					options={prioritySelect}
+					bind:value={priority}
+					error={shownErrors.priority}
+				/>
+			</div>
 
-			<!-- Waktu Awal Tugas -->
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+			<!-- Waktu Awal Tugas (Wajib Grid 2 di mobile) -->
+			<div class="grid grid-cols-2 gap-2.5">
 				<Input
 					label="Tanggal Mulai"
 					name="startDate"
@@ -168,12 +172,12 @@
 					type="time"
 					bind:value={startTime}
 					error={shownErrors.startTime}
-					hint="Waktu jam mulai"
+					hint="Jam mulai"
 				/>
 			</div>
 
-			<!-- Waktu Tenggat / Akhir Tugas -->
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+			<!-- Waktu Tenggat / Akhir Tugas (Wajib Grid 2 di mobile) -->
+			<div class="grid grid-cols-2 gap-2.5">
 				<Input
 					label="Tanggal Tenggat"
 					name="dueDate"

@@ -68,7 +68,7 @@
 	</div>
 </div>
 
-<section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Ringkasan KPI">
+<section class="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4" aria-label="Ringkasan KPI">
 	{#each kpis as kpi (kpi.label)}
 		<a
 			href={kpi.href}
