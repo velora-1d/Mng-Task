@@ -136,15 +136,63 @@ export async function getManualReminders(userId: string): Promise<ManualReminder
 	}));
 }
 
-/** Hitung total reminder aktif untuk badge header & sidebar */
-export async function countActiveReminders(user: Pick<SessionUser, 'id' | 'role'>): Promise<number> {
+/** Hitung total reminder aktif untuk badge header & sidebar (mempertimbangkan status dilihat) */
+export async function countActiveReminders(
+	user: Pick<SessionUser, 'id' | 'role'>,
+	seenAt?: string | null
+): Promise<number> {
 	const autos = await getAutoReminders(user);
 	const [manualCount] = await db
 		.select({ total: sql<number>`count(*)` })
 		.from(reminders)
 		.where(and(eq(reminders.userId, user.id), eq(reminders.status, 'PENDING')));
 
-	return autos.length + (manualCount?.total ?? 0);
+	// Jika belum pernah dilihat sama sekali, hitung semua
+	if (!seenAt) {
+		return autos.length + (manualCount?.total ?? 0);
+	}
+
+	const seenDate = new Date(seenAt).getTime();
+	if (Number.isNaN(seenDate)) {
+		return autos.length + (manualCount?.total ?? 0);
+	}
+
+	const today = todayWib();
+	const seenDay = seenAt.slice(0, 10);
+
+	// Jika sudah dilihat pada hari ini:
+	// Badge di-reset (0), kecuali ada task/reminder baru yang dibuat/diubah setelah waktu dilihat.
+	if (seenDay === today) {
+		const scope = scopedWhere(user);
+		const [newActiveTasks] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(tasks)
+			.where(
+				and(
+					scope,
+					ne(tasks.status, 'DONE'),
+					sql`${tasks.dueDate} is not null`,
+					sql`${tasks.updatedAt} > ${seenAt}`
+				)
+			);
+
+		const [newManualCount] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(reminders)
+			.where(
+				and(
+					eq(reminders.userId, user.id),
+					eq(reminders.status, 'PENDING'),
+					sql`${reminders.createdAt} > ${seenAt}`
+				)
+			);
+
+		return (newActiveTasks?.total ?? 0) + (newManualCount?.total ?? 0);
+	}
+
+	// Jika hari baru, ingatkan kembali task yang due hari ini dan overdue
+	const urgentToday = autos.filter((a) => a.urgency === 'today' || a.urgency === 'overdue');
+	return urgentToday.length + (manualCount?.total ?? 0);
 }
 
 export async function createManualReminder(

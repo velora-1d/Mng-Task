@@ -9,6 +9,7 @@
 	import Input from '#lib/components/ui/Input.svelte';
 	import Select from '#lib/components/ui/Select.svelte';
 	import Textarea from '#lib/components/ui/Textarea.svelte';
+	import QuickStatus from '#lib/components/tasks/QuickStatus.svelte';
 	import { PRIORITY_LABEL, STATUS_LABEL, priorityTone, statusTone } from '#lib/types';
 	import { formatDateTime, todayWib } from '#lib/utils/date';
 	import type { PageProps } from './$types';
@@ -207,7 +208,7 @@
 									<Chip tone={urgencyTone(auto.urgency)}>{auto.urgencyLabel}</Chip>
 								</td>
 								<td>
-									<Chip tone={statusTone(auto.status)}>{STATUS_LABEL[auto.status]}</Chip>
+									<QuickStatus id={auto.taskId} status={auto.status} next="/reminders" />
 								</td>
 								<td>
 									<Chip tone={priorityTone(auto.priority)}>{PRIORITY_LABEL[auto.priority]}</Chip>
