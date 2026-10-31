@@ -61,14 +61,14 @@
 	>
 		<!-- Ambient Glow & Pattern Grid -->
 		<div class="absolute inset-0 bg-[radial-gradient(rgba(234,88,12,0.12)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
-		<div class="absolute -top-32 -right-32 size-[420px] rounded-full bg-primary/25 blur-3xl pointer-events-none"></div>
-		<div class="absolute -bottom-32 -left-32 size-[420px] rounded-full bg-amber-500/15 blur-3xl pointer-events-none"></div>
+		<div class="absolute -top-32 -right-32 size-[420px] rounded-full bg-primary/20 blur-3xl pointer-events-none"></div>
+		<div class="absolute -bottom-32 -left-32 size-[420px] rounded-full bg-amber-500/10 blur-3xl pointer-events-none"></div>
 
 		<!-- Header Brand -->
 		<div class="relative z-10 flex items-center justify-between">
 			<div class="flex items-center gap-3">
 				<span
-					class="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-orange-600 font-[family-name:var(--font-display)] text-xl font-bold text-white shadow-lg shadow-primary/30"
+					class="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-orange-600 font-[family-name:var(--font-display)] text-xl font-bold text-white shadow-lg shadow-primary/25"
 				>
 					M
 				</span>
@@ -89,27 +89,24 @@
 		</div>
 
 		<!-- Hero Copy & Live Product Showcase Mockup -->
-		<div class="relative z-10 my-auto py-6">
+		<div class="relative z-10 my-auto py-8">
 			<div class="max-w-md">
-				<span class="inline-block rounded-lg bg-primary/20 border border-primary/30 px-3 py-1 text-[11px] font-bold tracking-wider text-orange-300 uppercase shadow-2xs">
-					🚀 Kolaborasi Tanpa Batas
-				</span>
-				<h1 class="mt-4 font-[family-name:var(--font-display)] text-3xl xl:text-4xl leading-[1.18] font-bold text-white">
+				<h1 class="font-[family-name:var(--font-display)] text-3xl xl:text-4xl leading-[1.2] font-bold text-white">
 					Bergabung & kelola tugas bersama tim Anda.
 				</h1>
-				<p class="mt-3 text-[14px] leading-relaxed text-stone-300">
-					Daftarkan akun anggota baru untuk mulai membagikan tugas, menyinkronkan kalender, dan menyelesaikan target bersama.
+				<p class="mt-3.5 text-[14px] leading-relaxed text-stone-300">
+					Daftarkan akun anggota baru untuk mulai membagikan tugas, menyinkronkan jadwal, dan menyelesaikan target bersama.
 				</p>
 			</div>
 
-			<!-- Interactive Glass Task Card Mockup -->
+			<!-- Task Card Preview Component -->
 			<div class="mt-8 rounded-2xl border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-xl">
 				<div class="flex items-center justify-between gap-2">
-					<span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/20 px-2.5 py-1 text-[11px] font-bold text-emerald-300 border border-emerald-500/30">
+					<span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 border border-emerald-500/30">
 						<span class="size-1.5 rounded-full bg-emerald-400"></span>
 						Akun Baru Siap Pakai
 					</span>
-					<span class="text-[11px] font-bold text-orange-300">Akses Tim</span>
+					<span class="text-[11px] font-semibold text-orange-300">Akses Tim</span>
 				</div>
 
 				<h3 class="mt-3 font-[family-name:var(--font-display)] text-base font-bold text-white">
@@ -179,7 +176,7 @@
 
 			<div>
 				<h2 class="font-[family-name:var(--font-display)] text-2xl font-bold tracking-tight text-ink">
-					Daftar Akun Baru 🚀
+					Daftar Akun Baru
 				</h2>
 				<p class="mt-1 text-sm text-ink-secondary">
 					Lengkapi formulir di bawah untuk membuat akun Mng-Task.
@@ -254,7 +251,7 @@
 				<div class="mt-2 text-center text-xs text-ink-secondary">
 					Sudah punya akun?{' '}
 					<a href="/login" class="font-bold text-primary hover:underline">
-						Masuk di sini sekarang →
+						Masuk ke akun Anda
 					</a>
 				</div>
 			</form>
