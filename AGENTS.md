@@ -1,9 +1,9 @@
-# Instruksi Operasional File
+# Instruksi Operasional File (MUTLAK)
 
-- Dilarang membuat file lewat terminal script (contoh: cat << EOF, echo >).
-- Dilarang mengedit file lewat manipulasi regex shell (contoh: sed, awk, inline replace script).
-- Pembuatan dan perubahan file wajib memakai mekanisme create/edit file langsung secara bersih.
-- Shell (terminal) hanya digunakan untuk running proses (git, build, test, package manager).
+- DILARANG KERAS membuat file lewat terminal script (contoh: Python inline `python3 -c`, cat << EOF, echo >).
+- DILARANG KERAS mengedit file lewat manipulasi regex shell (contoh: Python file rewrite, sed, awk, inline replace script).
+- Pembuatan dan perubahan file WAJIB memakai tool resmi: Tool MCP Filesystem `write_file` / `edit_file` atau tool IDE `write_file` / `edit_file`.
+- Shell (terminal) HANYA digunakan untuk running proses (git, build, test, package manager, dev server).
 
 # MANDATORY OBSIDIAN VAULT RAG INTEGRATION (Mng-Task)
 
