@@ -155,5 +155,16 @@
 		<a href="/settings" class="rounded-full" aria-label="Buka pengaturan profil">
 			<Avatar name={user.name} />
 		</a>
+
+		<form method="POST" action="/logout" class="inline-flex">
+			<button
+				type="submit"
+				class="grid size-9 place-items-center rounded-md border border-border-base bg-surface text-ink-secondary hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
+				title="Keluar (Logout)"
+				aria-label="Keluar"
+			>
+				<Icon name="logout" size={17} />
+			</button>
+		</form>
 	</div>
 </header>

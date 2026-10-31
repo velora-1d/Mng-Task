@@ -156,15 +156,28 @@ async function returnToOwner() {
 			</button>
 		{/if}
 
-		<a
-			href="/settings"
-			class="flex items-center gap-2.5 rounded-[10px] border border-border-base bg-canvas p-2.5 hover:bg-surface-raised"
-		>
-			<Avatar name={user.name} />
-			<div class="min-w-0">
-				<div class="truncate text-[13px] font-semibold text-ink">{user.name}</div>
-				<div class="text-[11px] text-ink-muted">{user.role === 'OWNER' ? 'Owner' : 'User'}</div>
-			</div>
-		</a>
+		<div class="flex items-center gap-1.5">
+			<a
+				href="/settings"
+				class="flex flex-1 items-center gap-2.5 rounded-[10px] border border-border-base bg-canvas p-2 hover:bg-surface-raised min-w-0"
+			>
+				<Avatar name={user.name} />
+				<div class="min-w-0 flex-1">
+					<div class="truncate text-[13px] font-semibold text-ink">{user.name}</div>
+					<div class="text-[11px] text-ink-muted">{user.role === 'OWNER' ? 'Owner' : 'User'}</div>
+				</div>
+			</a>
+
+			<form method="POST" action="/logout">
+				<button
+					type="submit"
+					class="grid size-10 place-items-center rounded-[10px] border border-border-base bg-canvas text-ink-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
+					title="Keluar (Logout)"
+					aria-label="Keluar"
+				>
+					<Icon name="logout" size={17} />
+				</button>
+			</form>
+		</div>
 	</div>
 </aside>
