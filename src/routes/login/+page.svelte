@@ -28,15 +28,6 @@
 		}
 	}
 
-	function fillDemo(type: 'admin' | 'user') {
-		if (type === 'admin') {
-			email = 'admin';
-			password = 'admin123';
-		} else {
-			email = 'user';
-			password = 'user123';
-		}
-	}
 
 	// Isi ulang email setelah validasi gagal supaya pengguna tidak mengetik ulang.
 	$effect(() => {
@@ -203,34 +194,6 @@
 				</p>
 			</div>
 
-			<!-- Quick Fill Demo Pills -->
-			<div class="mt-4 rounded-xl border border-border-base/70 bg-surface-raised/40 p-2.5">
-				<div class="mb-2 flex items-center justify-between text-[11px] font-semibold text-ink-muted">
-					<span>Akun Cepat (Klik untuk isi otomatis):</span>
-				</div>
-				<div class="grid grid-cols-2 gap-2">
-					<button
-						type="button"
-						class="flex items-center justify-center gap-1.5 rounded-lg border border-primary/25 bg-primary/10 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/20 transition active:scale-95"
-						onclick={() => fillDemo('admin')}
-						title="Isi form dengan akun Admin bawaan"
-					>
-						<Icon name="shield" size={13} class="text-primary" />
-						<span>Admin</span>
-						<span class="text-[10px] text-ink-muted font-normal">(admin)</span>
-					</button>
-					<button
-						type="button"
-						class="flex items-center justify-center gap-1.5 rounded-lg border border-border-base bg-surface px-2.5 py-1.5 text-xs font-semibold text-ink-secondary hover:bg-surface-raised hover:text-ink transition active:scale-95"
-						onclick={() => fillDemo('user')}
-						title="Isi form dengan akun User bawaan"
-					>
-						<Icon name="user" size={13} class="text-ink-secondary" />
-						<span>User</span>
-						<span class="text-[10px] text-ink-muted font-normal">(user)</span>
-					</button>
-				</div>
-			</div>
 
 			{#if error}
 				<div
