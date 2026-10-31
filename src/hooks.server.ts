@@ -1,4 +1,5 @@
 import type { Handle } from '@sveltejs/kit/hooks';
+import { setPlatformEnv } from '#lib/server/db/client';
 import {
 	SESSION_COOKIE,
 	purgeExpiredSessions,
@@ -19,6 +20,10 @@ function maybePurge(): void {
 }
 
 export const handle: Handle = async ({ event, resolve }) => {
+	if (event.platform && 'env' in event.platform) {
+		setPlatformEnv(event.platform.env);
+	}
+
 	event.locals.user = null;
 	event.locals.sessionId = null;
 	event.locals.impersonating = !!event.cookies.get('mngtask_impersonate');

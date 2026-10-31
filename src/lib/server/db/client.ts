@@ -5,12 +5,23 @@ import * as schema from './schema';
 
 let cachedDb: ReturnType<typeof drizzle<typeof schema>> | null = null;
 let cachedPool: Pool | null = null;
+let platformEnv: Record<string, string> | null = null;
+
+export function setPlatformEnv(newEnv: unknown) {
+	if (newEnv && typeof newEnv === 'object') {
+		platformEnv = newEnv as Record<string, string>;
+	}
+}
 
 function getConnectionString(): string {
-	const conn = env.DATABASE_URL || process.env.DATABASE_URL;
+	const conn =
+		platformEnv?.DATABASE_URL ||
+		env.DATABASE_URL ||
+		(typeof process !== 'undefined' ? process.env?.DATABASE_URL : undefined);
+
 	if (!conn) {
 		throw new Error(
-			'DATABASE_URL is not set. Please configure DATABASE_URL in Cloudflare Dashboard (Variables and Secrets) or .env file.'
+			'DATABASE_URL is not set. Please configure DATABASE_URL in Cloudflare Dashboard (Variables and Secrets) or wrangler.jsonc or .env file.'
 		);
 	}
 	return conn;

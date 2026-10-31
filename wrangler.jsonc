@@ -10,5 +10,22 @@
 	"assets": {
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
+	},
+	"vars": {
+		"AWS_ACCESS_KEY_ID": "nak_live_8ce83fdeb80d4cdeaffa3d1a2ab47051",
+		"AWS_ENDPOINT_URL_S3": "https://br-billowing-shape-a1uf3n8a.storage.c-1.ap-southeast-1.aws.neon.tech",
+		"AWS_REGION": "ap-southeast-1",
+		"AWS_SECRET_ACCESS_KEY": "nsk_live_0ff13ee6d6599004da371fa0553ed86ce95d852211089b672ac3bbd34b4b0987",
+		"DATABASE_URL": "postgresql://neondb_owner:npg_zBvp2fgk9UNH@ep-aged-lake-a1gij3qr-pooler.ap-southeast-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require",
+		"DATABASE_URL_UNPOOLED": "postgresql://neondb_owner:npg_zBvp2fgk9UNH@ep-aged-lake-a1gij3qr.ap-southeast-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require",
+		"NEON_AUTH_BASE_URL": "https://ep-aged-lake-a1gij3qr.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth",
+		"NEON_AUTH_JWKS_URL": "https://ep-aged-lake-a1gij3qr.neonauth.ap-southeast-1.aws.neon.tech/neondb/auth/.well-known/jwks.json",
+		"NEON_BRANCH": "production",
+		"NEON_FUNCTION_HELLO_BASE_URL": "https://br-billowing-shape-a1uf3n8a-hello.compute.ap-southeast-1.aws.neon.tech",
+		"NEON_REALTIME_SECRET": "nrt_live_1KLZLdXrio3mOLGCugFQXZIVoT6fwN1Rv8TYfjeoK-_Q",
+		"NEON_REALTIME_URL": "wss://ep-aged-lake-a1gij3qr.rt.c-1.ap-southeast-1.aws.neon.tech/",
+		"ORIGIN": "https://task.ve-lora.my.id",
+		"SESSION_COOKIE_NAME": "mngtask_session",
+		"SESSION_TTL_DAYS": "360"
 	}
 }
