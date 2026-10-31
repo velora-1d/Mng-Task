@@ -57,62 +57,65 @@
 
 <aside
 	class={[
-		'hidden lg:flex lg:sticky lg:top-0 lg:h-screen flex-col gap-6 border-r border-border-base bg-surface py-5 transition-all duration-300 z-30',
-		collapsed ? 'w-[72px] px-2 items-center' : 'w-[var(--sidebar-w)] px-4'
+		'hidden lg:flex lg:sticky lg:top-0 lg:h-screen flex-col border-r border-border-base bg-surface py-4 transition-all duration-300 z-30 select-none',
+		collapsed ? 'w-[72px] px-2 items-center' : 'w-[var(--sidebar-w)] px-3.5'
 	].join(' ')}
 	aria-label="Navigasi utama"
 >
 	{#if collapsed}
 		<!-- Header Collapsed -->
-		<div class="flex flex-col items-center gap-2.5">
+		<div class="flex flex-col items-center gap-2.5 pb-3 border-b border-border-base/60 w-full">
 			<div
-				class="grid size-[34px] place-items-center rounded-[9px] bg-primary font-[family-name:var(--font-display)] text-lg font-bold text-white shadow-xs"
+				class="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary-hover font-[family-name:var(--font-display)] text-base font-bold text-white shadow-xs"
 			>
 				M
 			</div>
 			{#if onToggleCollapse}
 				<button
 					type="button"
-					class="grid size-7 place-items-center rounded-md border border-border-base/70 text-ink-muted hover:bg-surface-raised hover:text-ink transition active:scale-95"
+					class="grid size-7 place-items-center rounded-lg border border-border-base/80 text-ink-muted hover:bg-surface-raised hover:text-ink transition active:scale-95"
 					onclick={onToggleCollapse}
 					title="Bentangkan sidebar"
 					aria-label="Bentangkan sidebar"
 				>
-					<Icon name="chevronRight" size={15} />
+					<Icon name="chevronRight" size={14} />
 				</button>
 			{/if}
 		</div>
 	{:else}
 		<!-- Header Expanded -->
-		<div class="flex items-center gap-2.5 px-2">
+		<div class="flex items-center gap-2.5 px-2 pb-3 border-b border-border-base/60">
 			<div
-				class="grid size-[34px] place-items-center rounded-[9px] bg-primary font-[family-name:var(--font-display)] text-lg font-bold text-white shrink-0"
+				class="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-primary to-primary-hover font-[family-name:var(--font-display)] text-base font-bold text-white shadow-xs shrink-0"
 			>
 				M
 			</div>
 			<div class="min-w-0 flex-1">
-				<div class="font-[family-name:var(--font-display)] text-lg font-bold tracking-[-0.02em] text-ink truncate">
+				<div class="font-[family-name:var(--font-display)] text-[15px] font-bold tracking-tight text-ink truncate">
 					Mng-Task
 				</div>
-				<div class="truncate text-[11px] text-ink-muted">{orgName}</div>
+				<div class="flex items-center gap-1.5 text-[11px] text-ink-muted truncate font-medium">
+					<span class="size-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+					<span class="truncate">{orgName !== 'Mng-Task' ? orgName : 'Workspace'}</span>
+				</div>
 			</div>
 			{#if onToggleCollapse}
 				<button
 					type="button"
-					class="grid size-7 place-items-center rounded-md border border-border-base/70 text-ink-muted hover:bg-surface-raised hover:text-ink transition active:scale-95 shrink-0"
+					class="grid size-7 place-items-center rounded-lg border border-border-base/80 text-ink-muted hover:bg-surface-raised hover:text-ink transition active:scale-95 shrink-0"
 					onclick={onToggleCollapse}
 					title="Ciutkan sidebar"
 					aria-label="Ciutkan sidebar"
 				>
-					<Icon name="chevronLeft" size={15} />
+					<Icon name="chevronLeft" size={14} />
 				</button>
 			{/if}
 		</div>
 	{/if}
 
-	<nav class={['flex flex-1 flex-col gap-1 overflow-y-auto w-full', collapsed ? 'items-center' : ''].join(' ')}>
+	<nav class={['flex flex-1 flex-col gap-1 overflow-y-auto w-full pt-3', collapsed ? 'items-center' : ''].join(' ')}>
 		{#if !collapsed}
-			<p class="px-2.5 pb-1.5 text-[11px] font-bold tracking-[0.09em] text-ink-muted uppercase">Menu</p>
+			<p class="px-2.5 pb-1 text-[10px] font-bold tracking-[0.12em] text-ink-muted uppercase">Menu Utama</p>
 		{/if}
 
 		{#each mainNav as item (item.href)}
@@ -124,7 +127,7 @@
 						'relative grid size-10 place-items-center rounded-xl transition active:scale-95',
 						active
 							? 'bg-primary text-white shadow-xs font-bold'
-							: 'text-ink-secondary hover:bg-surface-raised hover:text-ink'
+							: '!text-ink-secondary hover:!text-ink hover:bg-surface-raised'
 					].join(' ')}
 					aria-current={active ? 'page' : undefined}
 					title={item.label}
@@ -142,34 +145,42 @@
 				<a
 					href={item.href}
 					class={[
-						'relative flex h-[38px] items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition',
+						'group relative flex h-10 items-center gap-2.5 rounded-xl px-2.5 text-[13px] transition-all duration-150',
 						active
-							? 'bg-primary-soft font-semibold text-primary'
-							: 'text-ink-secondary hover:bg-surface-raised hover:text-ink'
+							? 'bg-primary/10 border border-primary/25 !text-primary shadow-2xs font-semibold dark:bg-primary/15'
+							: '!text-ink-secondary hover:!text-ink hover:bg-surface-raised/80 font-medium'
 					].join(' ')}
 					aria-current={active ? 'page' : undefined}
 				>
-					{#if active}
-						<span class="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-primary"></span>
-					{/if}
-					<Icon name={item.icon} />
+					<div
+						class={[
+							'grid size-7 place-items-center rounded-lg transition-all shrink-0',
+							active
+								? 'bg-primary text-white shadow-xs font-bold'
+								: 'text-ink-muted group-hover:text-ink group-hover:bg-surface-raised'
+						].join(' ')}
+					>
+						<Icon name={item.icon} size={16} />
+					</div>
 					<span class="truncate">{item.label}</span>
 					{#if item.badge && item.badge > 0}
 						<span
-							class="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1.5 text-[11px] font-bold text-[#451a03]"
+							class="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-accent px-1.5 text-[10px] font-bold text-[#451a03]"
 						>
 							{item.badge}
 						</span>
+					{:else if active}
+						<span class="ml-auto size-1.5 rounded-full bg-primary" aria-hidden="true"></span>
 					{/if}
 				</a>
 			{/if}
 		{/each}
 
 		{#if collapsed}
-			<div class="my-2 h-px w-6 bg-border-base/70"></div>
+			<div class="my-2.5 h-px w-6 bg-border-base/70"></div>
 		{:else}
-			<p class="mt-4 px-2.5 pb-1.5 text-[11px] font-bold tracking-[0.09em] text-ink-muted uppercase">
-				Kelola
+			<p class="mt-4 px-2.5 pb-1 text-[10px] font-bold tracking-[0.12em] text-ink-muted uppercase">
+				Pengaturan
 			</p>
 		{/if}
 
@@ -182,7 +193,7 @@
 						'relative grid size-10 place-items-center rounded-xl transition active:scale-95',
 						active
 							? 'bg-primary text-white shadow-xs font-bold'
-							: 'text-ink-secondary hover:bg-surface-raised hover:text-ink'
+							: '!text-ink-secondary hover:!text-ink hover:bg-surface-raised'
 					].join(' ')}
 					aria-current={active ? 'page' : undefined}
 					title={item.label}
@@ -193,24 +204,33 @@
 				<a
 					href={item.href}
 					class={[
-						'relative flex h-[38px] items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition',
+						'group relative flex h-10 items-center gap-2.5 rounded-xl px-2.5 text-[13px] transition-all duration-150',
 						active
-							? 'bg-primary-soft font-semibold text-primary'
-							: 'text-ink-secondary hover:bg-surface-raised hover:text-ink'
+							? 'bg-primary/10 border border-primary/25 !text-primary shadow-2xs font-semibold dark:bg-primary/15'
+							: '!text-ink-secondary hover:!text-ink hover:bg-surface-raised/80 font-medium'
 					].join(' ')}
 					aria-current={active ? 'page' : undefined}
 				>
-					{#if active}
-						<span class="absolute top-2 bottom-2 left-0 w-[3px] rounded-full bg-primary"></span>
-					{/if}
-					<Icon name={item.icon} />
+					<div
+						class={[
+							'grid size-7 place-items-center rounded-lg transition-all shrink-0',
+							active
+								? 'bg-primary text-white shadow-xs font-bold'
+								: 'text-ink-muted group-hover:text-ink group-hover:bg-surface-raised'
+						].join(' ')}
+					>
+						<Icon name={item.icon} size={16} />
+					</div>
 					<span class="truncate">{item.label}</span>
+					{#if active}
+						<span class="ml-auto size-1.5 rounded-full bg-primary" aria-hidden="true"></span>
+					{/if}
 				</a>
 			{/if}
 		{/each}
 	</nav>
 
-	<div class={['mt-auto flex flex-col gap-2 w-full', collapsed ? 'items-center' : ''].join(' ')}>
+	<div class={['mt-auto flex flex-col gap-2 w-full pt-3 border-t border-border-base/60', collapsed ? 'items-center' : ''].join(' ')}>
 		{#if impersonating}
 			{#if collapsed}
 				<button
@@ -225,11 +245,11 @@
 			{:else}
 				<button
 					type="button"
-					class="flex h-10 items-center justify-center gap-2 rounded-lg bg-amber-500/15 border border-amber-500/30 px-3 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/25 transition active:scale-95 disabled:opacity-50"
+					class="flex h-9 items-center justify-center gap-2 rounded-xl bg-amber-500/15 border border-amber-500/30 px-3 text-xs font-bold text-amber-700 dark:text-amber-300 hover:bg-amber-500/25 transition active:scale-95 disabled:opacity-50"
 					onclick={returnToOwner}
 					disabled={restoring}
 				>
-					<Icon name="switchUser" size={15} />
+					<Icon name="switchUser" size={14} />
 					<span>{restoring ? 'Kembali…' : 'Kembali ke Owner'}</span>
 				</button>
 			{/if}
@@ -239,7 +259,7 @@
 			<div class="flex flex-col items-center gap-2">
 				<a
 					href="/settings"
-					class="grid size-9 place-items-center rounded-full transition active:scale-95"
+					class="grid size-9 place-items-center rounded-full transition active:scale-95 hover:ring-2 hover:ring-primary/30"
 					title={`${user.name} (${user.role === 'OWNER' ? 'Owner' : 'User'})`}
 				>
 					<Avatar name={user.name} size="sm" />
@@ -248,36 +268,32 @@
 				<form method="POST" action="/logout">
 					<button
 						type="submit"
-						class="grid size-9 place-items-center rounded-lg border border-border-base bg-canvas text-ink-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
+						class="grid size-8 place-items-center rounded-lg border border-border-base bg-surface text-ink-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
 						title="Keluar (Logout)"
 						aria-label="Keluar"
 					>
-						<Icon name="logout" size={16} />
+						<Icon name="logout" size={15} />
 					</button>
 				</form>
 			</div>
 		{:else}
-			<div class="flex items-center gap-1.5">
-				<a
-					href="/settings"
-					class="flex flex-1 items-center gap-2.5 rounded-[10px] border border-border-base bg-canvas p-2 hover:bg-surface-raised min-w-0 transition"
-					title="Pengaturan akun"
-				>
-					<Avatar name={user.name} />
-					<div class="min-w-0 flex-1">
-						<div class="truncate text-[13px] font-semibold text-ink">{user.name}</div>
-						<div class="text-[11px] text-ink-muted">{user.role === 'OWNER' ? 'Owner' : 'User'}</div>
-					</div>
+			<div class="flex items-center gap-2 rounded-xl border border-border-base/80 bg-surface-raised/40 p-2 hover:border-border-strong/50 transition">
+				<a href="/settings" class="shrink-0 transition active:scale-95" title="Profil & Pengaturan">
+					<Avatar name={user.name} size="sm" />
+				</a>
+				<a href="/settings" class="min-w-0 flex-1 group" title="Profil & Pengaturan">
+					<div class="truncate text-xs font-bold text-ink group-hover:text-primary transition-colors">{user.name}</div>
+					<div class="text-[10px] text-ink-muted font-medium">{user.role === 'OWNER' ? 'Owner / Admin' : 'Anggota Tim'}</div>
 				</a>
 
-				<form method="POST" action="/logout">
+				<form method="POST" action="/logout" class="shrink-0">
 					<button
 						type="submit"
-						class="grid size-10 place-items-center rounded-[10px] border border-border-base bg-canvas text-ink-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
+						class="grid size-8 place-items-center rounded-lg text-ink-muted hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
 						title="Keluar (Logout)"
 						aria-label="Keluar"
 					>
-						<Icon name="logout" size={17} />
+						<Icon name="logout" size={15} />
 					</button>
 				</form>
 			</div>
