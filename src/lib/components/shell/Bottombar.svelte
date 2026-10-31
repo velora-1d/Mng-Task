@@ -75,9 +75,9 @@
 	);
 </script>
 
-<!-- Bottom Navigation Bar (Maksimal 5 item: 4 Menu Utama + 1 Menu Garis 3 'Lainnya') -->
+<!-- Bottom Navigation Bar (Maksimal 5 item: 4 Menu Utama + 1 Menu Garis 3 'Lainnya' - Icon Only) -->
 <nav
-	class="fixed bottom-0 inset-x-0 z-40 flex h-16 items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg shadow-lg lg:hidden"
+	class="fixed bottom-0 inset-x-0 z-40 flex h-14 items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg shadow-lg lg:hidden"
 	aria-label="Navigasi Bawah Mobile"
 >
 	{#each navItems as item (item.href)}
@@ -85,25 +85,23 @@
 		<a
 			href={item.href}
 			class={[
-				'relative flex flex-1 flex-col items-center justify-center gap-0.5 py-1 text-center transition-colors active:scale-95',
-				active ? 'text-primary font-bold' : 'text-ink-secondary hover:text-ink font-medium'
+				'relative flex h-10 w-12 items-center justify-center rounded-xl transition-all active:scale-90',
+				active ? 'bg-primary/15 text-primary' : 'text-ink-muted hover:text-ink'
 			].join(' ')}
 			aria-current={active ? 'page' : undefined}
+			aria-label={item.label}
+			title={item.label}
 		>
-			<div class="relative">
-				<Icon name={item.icon} size={20} class={active ? 'stroke-[2.2]' : ''} />
+			<div class="relative grid place-items-center">
+				<Icon name={item.icon} size={22} class={active ? 'stroke-[2.4]' : ''} />
 				{#if item.badge && item.badge > 0}
 					<span
-						class="absolute -top-1 -right-2 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#451a03]"
+						class="absolute -top-1.5 -right-2 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#451a03] shadow-2xs"
 					>
 						{item.badge}
 					</span>
 				{/if}
 			</div>
-			<span class="text-[11px] leading-tight tracking-tight">{item.label}</span>
-			{#if active}
-				<span class="absolute bottom-0.5 h-0.5 w-6 rounded-full bg-primary" aria-hidden="true"></span>
-			{/if}
 		</a>
 	{/each}
 
@@ -111,20 +109,15 @@
 	<button
 		type="button"
 		class={[
-			'relative flex flex-1 flex-col items-center justify-center gap-0.5 py-1 text-center transition-colors active:scale-95',
-			moreOpen || isSecondaryActive ? 'text-primary font-bold' : 'text-ink-secondary hover:text-ink font-medium'
+			'relative flex h-10 w-12 items-center justify-center rounded-xl transition-all active:scale-90',
+			moreOpen || isSecondaryActive ? 'bg-primary/15 text-primary' : 'text-ink-muted hover:text-ink'
 		].join(' ')}
 		onclick={() => (moreOpen = !moreOpen)}
 		aria-expanded={moreOpen}
 		aria-label="Menu lainnya"
+		title="Menu lainnya"
 	>
-		<div class="relative">
-			<Icon name="menu" size={20} class={moreOpen || isSecondaryActive ? 'stroke-[2.2]' : ''} />
-		</div>
-		<span class="text-[11px] leading-tight tracking-tight">Lainnya</span>
-		{#if isSecondaryActive}
-			<span class="absolute bottom-0.5 h-0.5 w-6 rounded-full bg-primary" aria-hidden="true"></span>
-		{/if}
+		<Icon name="menu" size={22} class={moreOpen || isSecondaryActive ? 'stroke-[2.4]' : ''} />
 	</button>
 </nav>
 

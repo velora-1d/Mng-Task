@@ -11,11 +11,11 @@
 
 	const COLORS = [
 		'var(--primary)',
-		'#78716c',
-		'#b45309',
-		'#15803d',
-		'#0f766e',
-		'#7c3aed'
+		'#2563eb',
+		'#0284c7',
+		'#0d9488',
+		'#16a34a',
+		'#0369a1'
 	];
 
 	function initials(value: string): string {

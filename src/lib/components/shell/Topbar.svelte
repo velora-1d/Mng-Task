@@ -77,11 +77,11 @@
 </script>
 
 <header
-	class="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border-base bg-[color-mix(in_srgb,var(--canvas)_88%,transparent)] px-4 backdrop-blur-md sm:px-6 lg:px-8"
+	class="sticky top-0 z-20 flex h-16 items-center gap-2.5 sm:gap-3 border-b border-border-base bg-[color-mix(in_srgb,var(--canvas)_88%,transparent)] px-3 sm:px-6 lg:px-8 backdrop-blur-md"
 >
-	<a href="/dashboard" class="flex items-center gap-2 lg:hidden">
-		<span class="grid size-7 place-items-center rounded-md bg-primary text-sm font-bold text-white">M</span>
-		<span class="font-[family-name:var(--font-display)] font-bold text-ink">Mng-Task</span>
+	<a href="/dashboard" class="flex items-center gap-2 lg:hidden shrink-0" aria-label="Beranda Mng-Task">
+		<span class="grid size-8 place-items-center rounded-lg bg-primary text-sm font-bold text-white shadow-xs">M</span>
+		<span class="hidden sm:inline font-[family-name:var(--font-display)] font-bold text-ink whitespace-nowrap">Mng-Task</span>
 	</a>
 
 	<form action="/tasks" method="get" class="hidden w-full max-w-[280px] sm:block xl:max-w-[320px]" role="search">
@@ -99,21 +99,21 @@
 
 	<!-- Live Jam & Tanggal (WIB) -->
 	<div
-		class="flex items-center gap-2 rounded-lg border border-border-base/70 bg-surface/70 px-2.5 py-1.5 text-xs text-ink-secondary shadow-2xs backdrop-blur-xs"
+		class="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-border-base/70 bg-surface/70 px-2 sm:px-2.5 py-1 sm:py-1.5 text-xs text-ink-secondary shadow-2xs backdrop-blur-xs shrink-0"
 		title="Waktu Indonesia Barat (WIB)"
 	>
 		<Icon name="clock" size={14} class="text-primary shrink-0" />
-		<div class="flex items-center gap-1.5">
+		<div class="flex items-center gap-1 sm:gap-1.5">
 			<span class="hidden md:inline font-medium text-ink-secondary">{currentDate}</span>
 			<span class="hidden md:inline text-border-strong/40">·</span>
-			<span class="tabular-nums font-semibold text-ink">{currentTime || '00:00:00'}</span>
-			<span class="text-[10px] font-bold text-primary uppercase">WIB</span>
+			<span class="tabular-nums font-semibold text-ink text-xs">{currentTime || '00:00:00'}</span>
+			<span class="text-[9px] sm:text-[10px] font-bold text-primary uppercase">WIB</span>
 		</div>
 	</div>
 
-	<div class="ml-auto flex items-center gap-2">
+	<div class="ml-auto flex items-center gap-1.5 sm:gap-2">
 		{#if switchableUsers.length > 0}
-			<div class="relative">
+			<div class="relative hidden sm:block">
 				<button
 					type="button"
 					class="flex h-9 items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 text-xs font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 transition active:scale-95"
@@ -160,7 +160,7 @@
 		{/if}
 		<button
 			type="button"
-			class="grid size-9 place-items-center rounded-md border border-border-base bg-surface text-ink-secondary hover:bg-surface-raised hover:text-ink"
+			class="hidden sm:grid size-9 place-items-center rounded-md border border-border-base bg-surface text-ink-secondary hover:bg-surface-raised hover:text-ink"
 			onclick={toggleTheme}
 			aria-label={theme === 'dark' ? 'Aktifkan tema terang' : 'Aktifkan tema gelap'}
 			title="Ganti tema"
@@ -183,11 +183,11 @@
 			{/if}
 		</a>
 
-		<a href="/settings" class="rounded-full" aria-label="Buka pengaturan profil">
+		<a href="/settings" class="rounded-full transition active:scale-95" aria-label="Buka pengaturan profil">
 			<Avatar name={user.name} />
 		</a>
 
-		<form method="POST" action="/logout" class="inline-flex">
+		<form method="POST" action="/logout" class="hidden sm:inline-flex">
 			<button
 				type="submit"
 				class="grid size-9 place-items-center rounded-md border border-border-base bg-surface text-ink-secondary hover:border-danger/30 hover:bg-danger/10 hover:text-danger transition active:scale-95"
