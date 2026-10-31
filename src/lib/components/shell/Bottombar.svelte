@@ -75,51 +75,84 @@
 	);
 </script>
 
-<!-- Bottom Navigation Bar (Maksimal 5 item: 4 Menu Utama + 1 Menu Garis 3 'Lainnya' - Icon Only) -->
-<nav
-	class="fixed bottom-0 inset-x-0 z-40 flex h-14 items-center justify-around border-t border-border-base bg-[color-mix(in_srgb,var(--surface)_96%,transparent)] px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg shadow-lg lg:hidden"
-	aria-label="Navigasi Bawah Mobile"
->
-	{#each navItems as item (item.href)}
-		{@const active = isActive(item.href)}
-		<a
-			href={item.href}
-			class={[
-				'relative flex h-10 w-12 items-center justify-center rounded-xl transition-all active:scale-90',
-				active ? 'bg-primary/15 text-primary' : 'text-ink-muted hover:text-ink'
-			].join(' ')}
-			aria-current={active ? 'page' : undefined}
-			aria-label={item.label}
-			title={item.label}
-		>
-			<div class="relative grid place-items-center">
-				<Icon name={item.icon} size={22} class={active ? 'stroke-[2.4]' : ''} />
-				{#if item.badge && item.badge > 0}
-					<span
-						class="absolute -top-1.5 -right-2 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#451a03] shadow-2xs"
-					>
-						{item.badge}
-					</span>
-				{/if}
-			</div>
-		</a>
-	{/each}
-
-	<!-- Menu ke-5: Garis 3 (Lainnya) -->
-	<button
-		type="button"
-		class={[
-			'relative flex h-10 w-12 items-center justify-center rounded-xl transition-all active:scale-90',
-			moreOpen || isSecondaryActive ? 'bg-primary/15 text-primary' : 'text-ink-muted hover:text-ink'
-		].join(' ')}
-		onclick={() => (moreOpen = !moreOpen)}
-		aria-expanded={moreOpen}
-		aria-label="Menu lainnya"
-		title="Menu lainnya"
+<!-- Floating Pill Bottom Navigation Bar (Dynamic Expanding Capsule) -->
+<div class="fixed bottom-3 inset-x-3 z-40 flex justify-center pointer-events-none lg:hidden pb-[env(safe-area-inset-bottom)]">
+	<nav
+		class="pointer-events-auto flex items-center gap-1.5 rounded-full border border-stone-200/80 bg-white/95 p-1.5 shadow-[0_10px_30px_rgba(28,25,23,0.12)] backdrop-blur-xl transition-all duration-300 dark:border-white/10 dark:bg-[#151518]/95 dark:shadow-[0_12px_36px_rgba(0,0,0,0.6)]"
+		aria-label="Navigasi Bawah Mobile"
 	>
-		<Icon name="menu" size={22} class={moreOpen || isSecondaryActive ? 'stroke-[2.4]' : ''} />
-	</button>
-</nav>
+		{#each navItems as item (item.href)}
+			{@const active = isActive(item.href)}
+			{#if active}
+				<!-- Active Pill Capsule -->
+				<a
+					href={item.href}
+					class="flex items-center gap-2 rounded-full border border-stone-200/70 bg-stone-100 py-1 pl-1 pr-3.5 text-stone-900 shadow-2xs transition-all duration-300 ease-out active:scale-95 dark:border-white/5 dark:bg-[#232328] dark:text-white"
+					aria-current="page"
+					aria-label={item.label}
+				>
+					<div class="relative grid size-8 place-items-center rounded-full bg-primary text-white shadow-xs shrink-0">
+						<Icon name={item.icon} size={18} class="stroke-[2.4]" />
+						{#if item.badge && item.badge > 0}
+							<span
+								class="absolute -top-1 -right-1 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-[#451a03] shadow-xs"
+							>
+								{item.badge}
+							</span>
+						{/if}
+					</div>
+					<span class="text-xs font-bold tracking-tight whitespace-nowrap">{item.label}</span>
+				</a>
+			{:else}
+				<!-- Inactive Circle Button -->
+				<a
+					href={item.href}
+					class="relative grid size-10 place-items-center rounded-full bg-stone-100 text-stone-600 transition-all duration-200 hover:bg-stone-200 hover:text-stone-900 active:scale-95 dark:bg-[#232328]/70 dark:text-stone-400 dark:hover:bg-[#232328] dark:hover:text-white shrink-0"
+					aria-label={item.label}
+					title={item.label}
+				>
+					<Icon name={item.icon} size={18} />
+					{#if item.badge && item.badge > 0}
+						<span
+							class="absolute -top-0.5 -right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-[#451a03] shadow-xs"
+						>
+							{item.badge}
+						</span>
+					{/if}
+				</a>
+			{/if}
+		{/each}
+
+		<!-- Menu ke-5: Garis 3 (Lainnya) -->
+		{#if moreOpen || isSecondaryActive}
+			<!-- Active Pill for Lainnya -->
+			<button
+				type="button"
+				class="flex items-center gap-2 rounded-full border border-stone-200/70 bg-stone-100 py-1 pl-1 pr-3.5 text-stone-900 shadow-2xs transition-all duration-300 ease-out active:scale-95 dark:border-white/5 dark:bg-[#232328] dark:text-white"
+				onclick={() => (moreOpen = !moreOpen)}
+				aria-expanded={moreOpen}
+				aria-label="Menu lainnya"
+			>
+				<div class="relative grid size-8 place-items-center rounded-full bg-primary text-white shadow-xs shrink-0">
+					<Icon name="menu" size={18} class="stroke-[2.4]" />
+				</div>
+				<span class="text-xs font-bold tracking-tight whitespace-nowrap">Lainnya</span>
+			</button>
+		{:else}
+			<!-- Inactive Circle for Lainnya -->
+			<button
+				type="button"
+				class="relative grid size-10 place-items-center rounded-full bg-stone-100 text-stone-600 transition-all duration-200 hover:bg-stone-200 hover:text-stone-900 active:scale-95 dark:bg-[#232328]/70 dark:text-stone-400 dark:hover:bg-[#232328] dark:hover:text-white shrink-0"
+				onclick={() => (moreOpen = !moreOpen)}
+				aria-expanded={moreOpen}
+				aria-label="Menu lainnya"
+				title="Menu lainnya"
+			>
+				<Icon name="menu" size={18} />
+			</button>
+		{/if}
+	</nav>
+</div>
 
 <!-- Popup / Bottom Sheet Menu Lainnya -->
 {#if moreOpen}

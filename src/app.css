@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 /* Pemetaan token Ember Studio ke utility Tailwind v4.
    Dipakai sebagai bg-canvas, text-ink, border-border-base, dst. */
 @theme inline {
