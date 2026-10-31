@@ -81,11 +81,6 @@
 					</span>
 				</div>
 			</div>
-
-			<span class="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-medium text-stone-200 backdrop-blur-md shadow-xs">
-				<span class="size-2 rounded-full bg-emerald-400 animate-pulse"></span>
-				Registrasi Terbuka
-			</span>
 		</div>
 
 		<!-- Hero Copy & Live Product Showcase Mockup -->
@@ -101,15 +96,7 @@
 
 			<!-- Task Card Preview Component -->
 			<div class="mt-8 rounded-2xl border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-xl">
-				<div class="flex items-center justify-between gap-2">
-					<span class="inline-flex items-center gap-1.5 rounded-md bg-emerald-500/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 border border-emerald-500/30">
-						<span class="size-1.5 rounded-full bg-emerald-400"></span>
-						Akun Baru Siap Pakai
-					</span>
-					<span class="text-[11px] font-semibold text-orange-300">Akses Tim</span>
-				</div>
-
-				<h3 class="mt-3 font-[family-name:var(--font-display)] text-base font-bold text-white">
+				<h3 class="font-[family-name:var(--font-display)] text-base font-bold text-white">
 					Onboarding Cepat & Penugasan Otomatis
 				</h3>
 
