@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { dev } from '$app/env';
 	import Button from '#lib/components/ui/Button.svelte';
 	import Input from '#lib/components/ui/Input.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
@@ -141,14 +140,6 @@
 					{submitting ? 'Memeriksa…' : 'Masuk'}
 				</Button>
 			</form>
-
-			{#if dev}
-				<div class="mt-6 rounded-lg border border-border-base bg-surface px-3 py-2.5 text-xs text-ink-muted">
-					<p class="mb-1 font-semibold text-ink-secondary">Akun demo</p>
-					<p><strong>Owner:</strong> admin / admin123</p>
-					<p><strong>User:</strong> user / user123</p>
-				</div>
-			{/if}
 		</div>
 	</div>
 </div>
